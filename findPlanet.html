@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مهمة الفضاء: إنقاذ كوكب نوميروس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Cairo:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Cairo", sans-serif;
+        background-color: #0c0a1a;
+        color: #e0e0e0;
+        margin: 0;
+        overflow-x: hidden;
+      }
+
+      #space-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .mission-control {
+        width: 100%;
+        max-width: 800px;
+        margin: 2rem auto;
+        background: rgba(18, 16, 41, 0.9);
+        backdrop-filter: blur(15px);
+        border-radius: 1.5rem;
+        box-shadow: 0 0 40px rgba(76, 29, 149, 0.7);
+        padding: 2rem;
+        border: 2px solid rgba(139, 92, 246, 0.6);
+        position: relative;
+        z-index: 10;
+      }
+
+      .checkpoint {
+        background: linear-gradient(
+          135deg,
+          rgba(30, 27, 75, 0.8),
+          rgba(45, 35, 95, 0.6)
+        );
+        border: 2px solid rgba(139, 92, 246, 0.4);
+        padding: 1.5rem;
+        border-radius: 1.25rem;
+        text-align: center;
+        margin-top: 1.5rem;
+        transition: all 0.5s ease;
+        opacity: 0;
+        transform: translateY(20px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .checkpoint::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(139, 92, 246, 0.1),
+          transparent
+        );
+        transform: rotate(45deg);
+        animation: shimmer 3s infinite;
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        }
+        50% {
+          transform: translateX(100%) translateY(100%) rotate(45deg);
+        }
+      }
+
+      .checkpoint.unlocked {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .checkpoint.active {
+        border-color: #fbbf24;
+        box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+        animation: pulse-glow 2s infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+        }
+        50% {
+          box-shadow: 0 0 50px rgba(251, 191, 36, 0.9);
+        }
+      }
+
+      .checkpoint h3 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #a78bfa;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 15px #a78bfa;
+        position: relative;
+        z-index: 2;
+      }
+
+      .path {
+        text-align: center;
+        font-size: 3rem;
+        opacity: 0;
+        transition: opacity 0.5s ease 0.3s;
+        height: 60px;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .path.unlocked {
+        opacity: 0.8;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+        background: linear-gradient(135deg, #1e1b4b, #2d1b69);
+        border: 2px solid #6d28d9;
+        color: #f5f3ff;
+        border-radius: 0.75rem;
+        width: 8rem;
+        height: 3rem;
+        font-size: 1.25rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+      }
+
+      input[type="number"]:focus {
+        border-color: #fbbf24;
+        box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        outline: none;
+      }
+
+      .check-btn {
+        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        color: white;
+        font-weight: bold;
+        padding: 0.75rem 2rem;
+        border-radius: 2rem;
+        margin-top: 1rem;
+        border: none;
+        border-bottom: 4px solid #5b21b6;
+        transition: all 0.3s ease;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1rem;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .check-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .check-btn:hover::before {
+        left: 100%;
+      }
+
+      .check-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(124, 58, 237, 0.4);
+      }
+
+      .check-btn:disabled {
+        background: linear-gradient(135deg, #4a4a6a, #35354b);
+        border-bottom-color: #35354b;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        background: linear-gradient(135deg, #1e1b4b, #2d1b69);
+        border-radius: 9999px;
+        overflow: hidden;
+        border: 2px solid #6d28d9;
+        position: relative;
+      }
+
+      .progress-bar {
+        width: 0%;
+        height: 30px;
+        background: linear-gradient(90deg, #facc15, #fb923c, #f97316, #dc2626);
+        box-shadow: 0 0 20px #f59e0b;
+        border-radius: 9999px;
+        transition: width 0.8s ease-in-out;
+        text-align: center;
+        color: #1a1a1a;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        line-height: 30px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        animation: progress-shine 2s infinite;
+      }
+
+      @keyframes progress-shine {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .particle-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .title-glow {
+        animation: title-pulse 3s ease-in-out infinite;
+      }
+
+      @keyframes title-pulse {
+        0%,
+        100% {
+          text-shadow: 0 0 20px #fbbf24, 0 0 40px #fbbf24;
+        }
+        50% {
+          text-shadow: 0 0 30px #fbbf24, 0 0 60px #fbbf24, 0 0 80px #fb923c;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-gray-200">
+    <canvas id="space-canvas"></canvas>
+
+    <div class="mission-control">
+      <canvas class="particle-canvas" id="particle-canvas"></canvas>
+
+      <!-- Header -->
+      <div class="text-center mb-6">
+        <h1
+          style="font-family: 'Orbitron', sans-serif"
+          class="text-4xl md:text-5xl font-bold text-[#FBBF24] title-glow"
+        >
+          MISSION: FIND PLANET NUMEROS
+        </h1>
+        <p class="text-lg text-[#D8B4FE] mt-2">
+          اشحن طاقة مركبتك لإكمال المهمة!
+        </p>
+      </div>
+
+      <!-- Progress Bar (Fuel Level) -->
+      <div class="progress-bar-container mb-6">
+        <div id="progress-bar" class="progress-bar">FUEL: 0%</div>
+      </div>
+
+      <!-- The checkpoints will be dynamically unlocked -->
+      <div id="mission-path"></div>
+
+      <!-- Final Congratulations Message -->
+      <div
+        id="final-congrats"
+        class="hidden text-center mt-8 p-8 bg-gradient-to-br from-purple-800 via-indigo-900 to-blue-800 rounded-2xl border-4 border-yellow-400 relative overflow-hidden"
+      >
+        <canvas class="particle-canvas" id="celebration-canvas"></canvas>
+        <h2
+          style="font-family: 'Orbitron', sans-serif"
+          class="text-4xl font-bold text-yellow-300 relative z-10"
+        >
+          MISSION ACCOMPLISHED
+        </h2>
+        <p class="text-2xl text-white mt-4 relative z-10">
+          لقد وصلت إلى كوكب نوميروس!
+        </p>
+        <p class="text-7xl mt-4 animate-pulse relative z-10">🪐</p>
+        <p class="text-xl text-yellow-200 font-bold relative z-10">
+          أنت أعظم مستكشف في المجرة!
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Enhanced Space Background Animation
+      class SpaceAnimation {
+        constructor() {
+          this.canvas = document.getElementById("space-canvas");
+          this.ctx = this.canvas.getContext("2d");
+          this.stars = [];
+          this.nebula = [];
+          this.planets = [];
+          this.comets = [];
+
+          this.resize();
+          this.createStars();
+          this.createNebula();
+          this.createPlanets();
+          this.createComets();
+          this.animate();
+
+          window.addEventListener("resize", () => this.resize());
+        }
+
+        resize() {
+          this.canvas.width = window.innerWidth;
+          this.canvas.height = window.innerHeight;
+        }
+
+        createStars() {
+          for (let i = 0; i < 200; i++) {
+            this.stars.push({
+              x: Math.random() * this.canvas.width,
+              y: Math.random() * this.canvas.height,
+              size: Math.random() * 2 + 0.5,
+              brightness: Math.random(),
+              twinkleSpeed: Math.random() * 0.02 + 0.01,
+            });
+          }
+        }
+
+        createNebula() {
+          for (let i = 0; i < 50; i++) {
+            this.nebula.push({
+              x: Math.random() * this.canvas.width,
+              y: Math.random() * this.canvas.height,
+              size: Math.random() * 100 + 50,
+              color: `hsl(${Math.random() * 60 + 240}, 70%, 20%)`,
+              drift: Math.random() * 0.5 + 0.1,
+            });
+          }
+        }
+
+        createPlanets() {
+          for (let i = 0; i < 3; i++) {
+            this.planets.push({
+              x: Math.random() * this.canvas.width,
+              y: Math.random() * this.canvas.height,
+              size: Math.random() * 30 + 20,
+              color: `hsl(${Math.random() * 360}, 60%, 50%)`,
+              rotation: 0,
+              rotationSpeed: Math.random() * 0.01 + 0.005,
+            });
+          }
+        }
+
+        createComets() {
+          for (let i = 0; i < 5; i++) {
+            this.comets.push({
+              x: -50,
+              y: Math.random() * this.canvas.height,
+              speed: Math.random() * 2 + 1,
+              size: Math.random() * 3 + 2,
+              tail: [],
+            });
+          }
+        }
+
+        animate() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // Draw nebula
+          this.nebula.forEach((n) => {
+            this.ctx.globalAlpha = 0.3;
+            this.ctx.fillStyle = n.color;
+            this.ctx.beginPath();
+            this.ctx.arc(n.x, n.y, n.size, 0, Math.PI * 2);
+            this.ctx.fill();
+            n.x += n.drift;
+            if (n.x > this.canvas.width + 100) n.x = -100;
+          });
+
+          // Draw stars with twinkling
+          this.ctx.globalAlpha = 1;
+          this.stars.forEach((star) => {
+            star.brightness += star.twinkleSpeed;
+            if (star.brightness > 1 || star.brightness < 0) {
+              star.twinkleSpeed *= -1;
+            }
+
+            this.ctx.globalAlpha = Math.abs(star.brightness);
+            this.ctx.fillStyle = "#ffffff";
+            this.ctx.beginPath();
+            this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            this.ctx.fill();
+          });
+
+          // Draw planets
+          this.ctx.globalAlpha = 0.8;
+          this.planets.forEach((planet) => {
+            planet.rotation += planet.rotationSpeed;
+
+            this.ctx.save();
+            this.ctx.translate(planet.x, planet.y);
+            this.ctx.rotate(planet.rotation);
+
+            // Planet body
+            this.ctx.fillStyle = planet.color;
+            this.ctx.beginPath();
+            this.ctx.arc(0, 0, planet.size, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Planet rings
+            this.ctx.strokeStyle = `${planet.color}88`;
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.ellipse(
+              0,
+              0,
+              planet.size * 1.5,
+              planet.size * 0.3,
+              0,
+              0,
+              Math.PI * 2
+            );
+            this.ctx.stroke();
+
+            this.ctx.restore();
+          });
+
+          // Draw comets
+          this.ctx.globalAlpha = 1;
+          this.comets.forEach((comet) => {
+            // Update comet position
+            comet.x += comet.speed;
+            comet.y += Math.sin(comet.x * 0.01) * 0.5;
+
+            // Add to tail
+            comet.tail.push({ x: comet.x, y: comet.y });
+            if (comet.tail.length > 20) {
+              comet.tail.shift();
+            }
+
+            // Draw tail
+            for (let i = 0; i < comet.tail.length; i++) {
+              const alpha = i / comet.tail.length;
+              this.ctx.globalAlpha = alpha;
+              this.ctx.fillStyle = "#00ffff";
+              this.ctx.beginPath();
+              this.ctx.arc(
+                comet.tail[i].x,
+                comet.tail[i].y,
+                comet.size * alpha,
+                0,
+                Math.PI * 2
+              );
+              this.ctx.fill();
+            }
+
+            // Draw comet head
+            this.ctx.globalAlpha = 1;
+            this.ctx.fillStyle = "#ffffff";
+            this.ctx.beginPath();
+            this.ctx.arc(comet.x, comet.y, comet.size, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Reset comet if off screen
+            if (comet.x > this.canvas.width + 50) {
+              comet.x = -50;
+              comet.y = Math.random() * this.canvas.height;
+              comet.tail = [];
+            }
+          });
+
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+
+      // Particle System for UI Elements
+      class ParticleSystem {
+        constructor(canvas) {
+          this.canvas = canvas;
+          this.ctx = canvas.getContext("2d");
+          this.particles = [];
+          this.resize();
+          this.animate();
+        }
+
+        resize() {
+          this.canvas.width = this.canvas.offsetWidth;
+          this.canvas.height = this.canvas.offsetHeight;
+        }
+
+        addParticles(x, y, color = "#A78BFA", count = 10) {
+          for (let i = 0; i < count; i++) {
+            this.particles.push({
+              x: x + (Math.random() - 0.5) * 50,
+              y: y + (Math.random() - 0.5) * 50,
+              vx: (Math.random() - 0.5) * 4,
+              vy: (Math.random() - 0.5) * 4,
+              size: Math.random() * 4 + 2,
+              color: color,
+              life: 1.0,
+              decay: Math.random() * 0.02 + 0.01,
+            });
+          }
+        }
+
+        animate() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= p.decay;
+            p.vy += 0.1; // gravity
+
+            if (p.life <= 0) {
+              this.particles.splice(i, 1);
+              continue;
+            }
+
+            this.ctx.globalAlpha = p.life;
+            this.ctx.fillStyle = p.color;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+
+      // Celebration Particles
+      class CelebrationParticles {
+        constructor(canvas) {
+          this.canvas = canvas;
+          this.ctx = canvas.getContext("2d");
+          this.particles = [];
+          this.fireworks = [];
+          this.resize();
+          this.animate();
+          this.startCelebration();
+        }
+
+        resize() {
+          this.canvas.width = this.canvas.offsetWidth;
+          this.canvas.height = this.canvas.offsetHeight;
+        }
+
+        startCelebration() {
+          // Create continuous fireworks
+          setInterval(() => {
+            this.createFirework();
+          }, 800);
+
+          // Create falling stars
+          setInterval(() => {
+            this.createFallingStar();
+          }, 300);
+        }
+
+        createFirework() {
+          const x = Math.random() * this.canvas.width;
+          const y = Math.random() * this.canvas.height * 0.6;
+          const colors = [
+            "#FFD700",
+            "#FF6B6B",
+            "#4ECDC4",
+            "#45B7D1",
+            "#96CEB4",
+            "#FFEAA7",
+          ];
+
+          for (let i = 0; i < 20; i++) {
+            const angle = (Math.PI * 2 * i) / 20;
+            const velocity = Math.random() * 4 + 2;
+
+            this.particles.push({
+              x: x,
+              y: y,
+              vx: Math.cos(angle) * velocity,
+              vy: Math.sin(angle) * velocity,
+              size: Math.random() * 3 + 2,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              life: 1.0,
+              decay: 0.015,
+            });
+          }
+        }
+
+        createFallingStar() {
+          this.particles.push({
+            x: Math.random() * this.canvas.width,
+            y: -10,
+            vx: (Math.random() - 0.5) * 2,
+            vy: Math.random() * 3 + 2,
+            size: Math.random() * 4 + 3,
+            color: "#FFFFFF",
+            life: 1.0,
+            decay: 0.005,
+            type: "star",
+          });
+        }
+
+        animate() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= p.decay;
+
+            if (p.type !== "star") {
+              p.vy += 0.05; // gravity for fireworks
+            }
+
+            if (p.life <= 0 || p.y > this.canvas.height + 10) {
+              this.particles.splice(i, 1);
+              continue;
+            }
+
+            this.ctx.globalAlpha = p.life;
+            this.ctx.fillStyle = p.color;
+
+            if (p.type === "star") {
+              // Draw star shape
+              this.ctx.save();
+              this.ctx.translate(p.x, p.y);
+              this.ctx.beginPath();
+              for (let j = 0; j < 5; j++) {
+                const angle1 = (j * Math.PI * 2) / 5;
+                const angle2 = ((j + 0.5) * Math.PI * 2) / 5;
+                const r1 = p.size;
+                const r2 = p.size * 0.5;
+
+                if (j === 0) {
+                  this.ctx.moveTo(Math.cos(angle1) * r1, Math.sin(angle1) * r1);
+                } else {
+                  this.ctx.lineTo(Math.cos(angle1) * r1, Math.sin(angle1) * r1);
+                }
+                this.ctx.lineTo(Math.cos(angle2) * r2, Math.sin(angle2) * r2);
+              }
+              this.ctx.closePath();
+              this.ctx.fill();
+              this.ctx.restore();
+            } else {
+              this.ctx.beginPath();
+              this.ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+              this.ctx.fill();
+            }
+          }
+
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+
+      // Initialize animations
+      const spaceAnimation = new SpaceAnimation();
+      const particleSystem = new ParticleSystem(
+        document.getElementById("particle-canvas")
+      );
+
+      // Mission data and game logic
+      const missionData = [
+        {
+          type: "checkpoint",
+          answer: 25,
+          title: "🌍 نقطة الإقلاع من الأرض",
+          question: "17 + 8 =",
+          prompt: "يجب حل هذه المعادلة لتفعيل محركات الإقلاع!",
+          button: "إقلاع!",
+          feedback: {
+            correct: "تم تفعيل المحركات! انطلاق!",
+            incorrect: "طاقة غير كافية للإقلاع!",
+          },
+        },
+        { type: "path", icon: "🚀" },
+        {
+          type: "checkpoint",
+          answer: 34,
+          title: "🛰️ حقل الكويكبات",
+          question: "25 + 9 =",
+          prompt: "احسب المسار الصحيح لتجنب الكويكبات.",
+          button: "توجيه!",
+          feedback: {
+            correct: "تم تفادي الخطر بنجاح!",
+            incorrect: "مسار خاطئ! حاول مرة أخرى!",
+          },
+        },
+        { type: "path", icon: "✨" },
+        {
+          type: "checkpoint",
+          answer: 21,
+          title: "🌌 سديم الألوان",
+          question: "15 + 6 =",
+          prompt: "اجمع طاقة النجوم الملونة.",
+          button: "اجمع!",
+          feedback: {
+            correct: "طاقة مجمعة!",
+            incorrect: "هذه ليست الطاقة المطلوبة.",
+          },
+        },
+        { type: "path", icon: "💫" },
+        {
+          type: "checkpoint",
+          answer: 72,
+          title: "🪐 الاقتراب من نوميروس",
+          question: "64 + 8 =",
+          prompt: "الحساب الأخير للدخول في مدار الكوكب.",
+          button: "دخول المدار!",
+          feedback: {
+            correct: "تم تثبيت المدار! تستعد للهبوط!",
+            incorrect: "حسابات خاطئة! انحراف عن المسار!",
+          },
+        },
+      ];
+
+      const missionPathContainer = document.getElementById("mission-path");
+      const progressBar = document.getElementById("progress-bar");
+      const finalCongrats = document.getElementById("final-congrats");
+
+      const checkpointElements = [];
+      let checkpointsCompleted = 0;
+      const totalCheckpoints = missionData.filter(
+        (item) => item.type === "checkpoint"
+      ).length;
+
+      function checkAnswer(index) {
+        const item = missionData[index];
+        const element = checkpointElements[index];
+
+        const checkBtn = element.querySelector(".check-btn");
+        const answerInput = element.querySelector(".answer-input");
+        const feedbackCorrect = element.querySelector(".feedback-correct");
+        const feedbackIncorrect = element.querySelector(".feedback-incorrect");
+
+        feedbackCorrect.classList.add("hidden");
+        feedbackIncorrect.classList.add("hidden");
+        answerInput.classList.remove("border-red-500", "border-green-400");
+
+        const userAnswer = parseInt(answerInput.value);
+
+        if (userAnswer === item.answer) {
+          feedbackCorrect.classList.remove("hidden");
+          answerInput.classList.add("border-green-400");
+          answerInput.disabled = true;
+          checkBtn.disabled = true;
+          element.classList.remove("active");
+
+          // Add success particles
+          const rect = element.getBoundingClientRect();
+          const containerRect = document
+            .getElementById("particle-canvas")
+            .getBoundingClientRect();
+          particleSystem.addParticles(
+            rect.left + rect.width / 2 - containerRect.left,
+            rect.top + rect.height / 2 - containerRect.top,
+            "#00FF00",
+            15
+          );
+
+          // Update progress
+          checkpointsCompleted++;
+          const percentage = Math.round(
+            (checkpointsCompleted / totalCheckpoints) * 100
+          );
+          progressBar.style.width = `${percentage}%`;
+          progressBar.textContent = `FUEL: ${percentage}%`;
+
+          // Unlock next part of the mission
+          const nextPathIndex = index + 1;
+          const nextCheckpointIndex = index + 2;
+
+          if (checkpointElements[nextPathIndex]) {
+            setTimeout(() => {
+              checkpointElements[nextPathIndex].classList.add("unlocked");
+              if (checkpointElements[nextCheckpointIndex]) {
+                setTimeout(() => {
+                  checkpointElements[nextCheckpointIndex].classList.add(
+                    "unlocked",
+                    "active"
+                  );
+                }, 400);
+              }
+            }, 200);
+          } else {
+            // This was the last checkpoint - start celebration!
+            setTimeout(() => {
+              finalCongrats.classList.remove("hidden");
+              new CelebrationParticles(
+                document.getElementById("celebration-canvas")
+              );
+            }, 500);
+          }
+        } else {
+          feedbackIncorrect.classList.remove("hidden");
+          answerInput.classList.add("border-red-500");
+
+          // Add error particles
+          const rect = element.getBoundingClientRect();
+          const containerRect = document
+            .getElementById("particle-canvas")
+            .getBoundingClientRect();
+          particleSystem.addParticles(
+            rect.left + rect.width / 2 - containerRect.left,
+            rect.top + rect.height / 2 - containerRect.top,
+            "#FF0000",
+            8
+          );
+        }
+      }
+
+      // --- Build the mission dynamically ---
+      missionData.forEach((item, index) => {
+        const element = document.createElement("div");
+        if (item.type === "checkpoint") {
+          element.className = "checkpoint";
+          let promptHTML = item.prompt
+            ? `<p class="mb-4 text-purple-300">${item.prompt}</p>`
+            : "";
+
+          element.innerHTML = `
+                    <h3>${item.title}</h3>
+                    ${promptHTML}
+                    <div class="flex justify-center items-center gap-4 mb-4">
+                        <p class="text-3xl font-bold text-yellow-300">${item.question}</p>
+                        <input type="number" class="answer-input p-3 text-center" placeholder="؟">
+                    </div>
+                    <button class="check-btn">${item.button}</button>
+                    <div class="feedback-correct hidden mt-4 p-4 bg-green-900 bg-opacity-60 rounded-xl text-green-300 font-bold border border-green-500">
+                        <p>${item.feedback.correct}</p>
+                    </div>
+                    <div class="feedback-incorrect hidden mt-4 p-4 bg-red-900 bg-opacity-60 rounded-xl text-red-300 font-bold border border-red-500">
+                        <p>${item.feedback.incorrect}</p>
+                    </div>
+                `;
+
+          const checkBtn = element.querySelector(".check-btn");
+          const answerInput = element.querySelector(".answer-input");
+
+          checkBtn.addEventListener("click", () => checkAnswer(index));
+          answerInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") checkAnswer(index);
+          });
+
+          // Add hover effects for particles
+          element.addEventListener("mouseenter", () => {
+            if (element.classList.contains("active")) {
+              const rect = element.getBoundingClientRect();
+              const containerRect = document
+                .getElementById("particle-canvas")
+                .getBoundingClientRect();
+              particleSystem.addParticles(
+                rect.left + rect.width / 2 - containerRect.left,
+                rect.top + rect.height / 2 - containerRect.top,
+                "#A78BFA",
+                5
+              );
+            }
+          });
+        } else {
+          // It's a path
+          element.className = "path";
+          element.innerHTML = item.icon;
+        }
+        missionPathContainer.appendChild(element);
+        checkpointElements.push(element);
+      });
+
+      // --- Start the mission ---
+      if (checkpointElements[0]) {
+        checkpointElements[0].classList.add("unlocked", "active");
+      }
+
+      // Add resize handler for particle canvas
+      window.addEventListener("resize", () => {
+        particleSystem.resize();
+      });
+
+      // Add some ambient particles on load
+      setTimeout(() => {
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            particleSystem.addParticles(
+              Math.random() * particleSystem.canvas.width,
+              Math.random() * particleSystem.canvas.height,
+              "#A78BFA",
+              3
+            );
+          }, i * 1000);
+        }
+      }, 2000);
+
+      // Add periodic ambient effects
+      setInterval(() => {
+        if (Math.random() < 0.3) {
+          particleSystem.addParticles(
+            Math.random() * particleSystem.canvas.width,
+            Math.random() * particleSystem.canvas.height,
+            Math.random() > 0.5 ? "#A78BFA" : "#FBBF24",
+            2
+          );
+        }
+      }, 3000);
+    </script>
+  </body>
+</html>
