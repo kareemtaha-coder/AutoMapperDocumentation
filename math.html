@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Practice Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f0f4f8; /* Light gray-blue background */
+        color: #1e293b; /* Dark slate text */
+      }
+      .main-title {
+        color: #0f172a; /* Very dark blue */
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+      @media (min-width: 768px) {
+        .main-title {
+          font-size: 3.5rem;
+        }
+      }
+      .activity-card {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+      }
+      .activity-title {
+        color: #1d4ed8; /* Strong blue */
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #dbeafe;
+      }
+      .styled-input {
+        width: 80px;
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 2px solid #93c5fd;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e3a8a;
+        background-color: #eff6ff;
+        transition: all 0.3s;
+      }
+      .styled-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+      }
+      .action-button,
+      .print-button {
+        background: #2563eb;
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+      }
+      .action-button:hover,
+      .print-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 10px rgba(37, 99, 235, 0.3);
+      }
+      .print-button {
+        background: #16a34a;
+        box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);
+      }
+      .feedback {
+        margin-top: 0.5rem;
+        font-weight: 600;
+        min-height: 24px;
+      }
+      .correct {
+        color: #16a34a;
+      }
+      .incorrect {
+        color: #dc2626;
+      }
+      .correct-input {
+        border-color: #22c55e !important;
+      }
+      .incorrect-input {
+        border-color: #ef4444 !important;
+      }
+      .question-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem;
+        border-radius: 10px;
+        background-color: #f8fafc;
+        margin-bottom: 0.75rem;
+        font-size: 1.25rem;
+      }
+      .question-text {
+        font-weight: 600;
+      }
+      .highlighted-digit {
+        color: #2563eb;
+        font-weight: 700;
+      }
+
+      #certificate-container {
+        /* ... */
+      }
+      #certificate {
+        background-color: #fff;
+        border: 4px solid #3b82f6;
+      }
+      #certificate:after {
+        content: "🎓";
+        font-size: 50px;
+      }
+
+      /* Print Styles */
+      @media print {
+        body {
+          background: #fff !important;
+        }
+        .screen-only {
+          display: none !important;
+        }
+        .print-only {
+          display: block !important;
+        }
+        @page {
+          size: A4;
+          margin: 1.5cm;
+        }
+
+        #printable-worksheet {
+          font-family: "Poppins", sans-serif;
+          color: #000;
+        }
+        .p-header {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+        .p-title {
+          font-size: 22pt;
+          font-weight: 700;
+          color: #1d4ed8;
+        }
+        .p-name-date {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12pt;
+          margin-bottom: 2rem;
+        }
+        .p-section {
+          margin-bottom: 1.5rem;
+          page-break-inside: avoid;
+        }
+        .p-section-title {
+          font-size: 16pt;
+          font-weight: 700;
+          color: #1e3a8a;
+          border-bottom: 2px solid #93c5fd;
+          padding-bottom: 0.5rem;
+          margin-bottom: 1rem;
+        }
+        .p-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.5rem 1.5rem;
+        }
+        .p-item {
+          font-size: 12pt;
+          margin-bottom: 0.5rem;
+        }
+
+        #printable-certificate {
+          /* ... */
+        }
+      }
+    </style>
+  </head>
+  <body class="p-4 sm:p-6 md:p-8">
+    <div id="game-container" class="container mx-auto max-w-4xl screen-only">
+      <header class="text-center mb-8">
+        <h1 class="main-title">Math Practice Hub</h1>
+        <p class="text-lg text-slate-500 mt-2">
+          Let's sharpen your math skills!
+        </p>
+      </header>
+      <div
+        class="name-input-container bg-white p-6 rounded-xl mb-8 shadow-sm border"
+      >
+        <label
+          for="name-input"
+          class="text-xl font-semibold text-slate-700 mb-2 block text-center"
+          >Enter your name:</label
+        >
+        <input
+          type="text"
+          id="name-input"
+          class="w-full max-w-sm mx-auto block styled-input !w-full"
+          placeholder="Your name here"
+        />
+      </div>
+      <div id="activities-container">
+        <!-- Activities will be dynamically generated here -->
+      </div>
+      <div class="text-center mt-4">
+        <button id="check-all-button" class="action-button">
+          Check All My Answers
+        </button>
+        <button id="print-button" class="print-button">Print Worksheet</button>
+      </div>
+      <p id="final-feedback" class="text-center text-2xl font-bold mt-4"></p>
+    </div>
+
+    <div
+      id="certificate-container"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 screen-only hidden"
+    >
+      <div
+        id="certificate"
+        class="relative bg-white rounded-xl p-8 text-center w-full max-w-lg transform transition-transform scale-95"
+      >
+        <h2 class="text-2xl md:text-3xl font-bold text-blue-700">
+          Certificate of Achievement
+        </h2>
+        <p class="text-slate-600 mt-4 text-base md:text-lg">
+          This certificate is proudly awarded to:
+        </p>
+        <div
+          id="certificate-name"
+          class="text-3xl md:text-4xl font-bold text-pink-600 my-4"
+        ></div>
+        <p class="text-slate-600 text-base md:text-lg">
+          For successfully completing all the exercises in the Math Practice
+          Hub!
+        </p>
+        <button id="play-again" class="action-button mt-6">
+          Practice Again
+        </button>
+      </div>
+    </div>
+
+    <div id="printable-worksheet" class="hidden print-only">
+      <div class="p-header">
+        <h1 class="p-title">Math Practice Hub Worksheet</h1>
+      </div>
+      <div class="p-name-date">
+        <span>Name: .....................................................</span>
+        <span>Date: ...... / ...... / ............</span>
+      </div>
+      <!-- Sections will be populated by JS -->
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const activitiesContainer = document.getElementById(
+          "activities-container"
+        );
+        const nameInput = document.getElementById("name-input");
+        const checkAllButton = document.getElementById("check-all-button");
+        const finalFeedback = document.getElementById("final-feedback");
+        const certificateContainer = document.getElementById(
+          "certificate-container"
+        );
+        const certificateName = document.getElementById("certificate-name");
+        const playAgainBtn = document.getElementById("play-again");
+        const printBtn = document.getElementById("print-button");
+        const printableWorksheet = document.getElementById(
+          "printable-worksheet"
+        );
+
+        let allQuestions = [];
+
+        function generateQuestions() {
+          allQuestions = [];
+          // Section 1: Place Value
+          let placeValueQs = [];
+          for (let i = 0; i < 8; i++) {
+            const num = Math.floor(Math.random() * 900) + 100;
+            const pos = Math.floor(Math.random() * 3);
+            const digit = parseInt(num.toString()[pos]);
+            const answer = digit * Math.pow(10, 2 - pos);
+            const text = `In <b>${num
+              .toString()
+              .substring(
+                0,
+                pos
+              )}<span class='highlighted-digit'>${digit}</span>${num
+              .toString()
+              .substring(
+                pos + 1
+              )}</b>, what's the value of the highlighted digit?`;
+            placeValueQs.push({ text, answer, type: "Place Value" });
+          }
+          allQuestions.push({
+            title: "Place Value Challenge",
+            questions: placeValueQs,
+          });
+
+          // Section 2: Addition & Subtraction
+          let calcQs = [];
+          for (let i = 0; i < 10; i++) {
+            let num1 = Math.floor(Math.random() * 90) + 10;
+            let num2 = Math.floor(Math.random() * 90) + 10;
+            let text, answer;
+            if (Math.random() > 0.5) {
+              text = `${num1} + ${num2} = ?`;
+              answer = num1 + num2;
+            } else {
+              if (num1 < num2) [num1, num2] = [num2, num1];
+              text = `${num1} - ${num2} = ?`;
+              answer = num1 - num2;
+            }
+            calcQs.push({ text, answer, type: "Calculation" });
+          }
+          allQuestions.push({
+            title: "Addition & Subtraction Practice",
+            questions: calcQs,
+          });
+
+          // Section 3: Multiplication (2-5)
+          let multiQs = [];
+          for (let i = 0; i < 10; i++) {
+            const num1 = Math.floor(Math.random() * 4) + 2; // 2-5
+            const num2 = Math.floor(Math.random() * 11) + 1; // 1-11
+            multiQs.push({
+              text: `${num1} × ${num2} = ?`,
+              answer: num1 * num2,
+              type: "Multiplication",
+            });
+          }
+          allQuestions.push({
+            title: "Multiplication Practice (Tables 2-5)",
+            questions: multiQs,
+          });
+
+          // Section 4: Multiplication (Table of 6)
+          let table6Qs = [];
+          for (let i = 1; i <= 12; i++) {
+            table6Qs.push({
+              text: `6 × ${i} = ?`,
+              answer: 6 * i,
+              type: "Table of 6",
+            });
+          }
+          allQuestions.push({
+            title: "The '6' Times Table Challenge",
+            questions: table6Qs,
+          });
+        }
+
+        function renderActivities() {
+          let html = "";
+          allQuestions.forEach((section, sectionIndex) => {
+            html += `
+                    <div class="activity-card">
+                        <h2 class="activity-title">${section.title}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                `;
+            section.questions.forEach((q, qIndex) => {
+              const inputId = `q-${sectionIndex}-${qIndex}`;
+              html += `
+                        <div class="question-item">
+                            <label for="${inputId}" class="question-text">${q.text
+                .replace(/<b>/g, "<span class='font-bold'>")
+                .replace(/<\/b>/g, "</span>")}</label>
+                            <input type="number" id="${inputId}" class="styled-input" data-answer="${
+                q.answer
+              }">
+                        </div>
+                    `;
+            });
+            html += `</div></div>`;
+          });
+          activitiesContainer.innerHTML = html;
+        }
+
+        function checkAllAnswers() {
+          let totalQuestions = 0;
+          let correctAnswers = 0;
+
+          allQuestions.forEach((section, sectionIndex) => {
+            section.questions.forEach((q, qIndex) => {
+              totalQuestions++;
+              const input = document.getElementById(
+                `q-${sectionIndex}-${qIndex}`
+              );
+              input.classList.remove("correct-input", "incorrect-input");
+              if (input.value !== "") {
+                if (parseInt(input.value) === q.answer) {
+                  correctAnswers++;
+                  input.classList.add("correct-input");
+                } else {
+                  input.classList.add("incorrect-input");
+                }
+              }
+            });
+          });
+
+          if (correctAnswers === totalQuestions) {
+            finalFeedback.textContent =
+              "🎉 Excellent! All answers are correct!";
+            finalFeedback.className =
+              "text-center text-2xl font-bold mt-4 correct";
+            setTimeout(showCertificate, 1000);
+          } else {
+            finalFeedback.textContent = `You got ${correctAnswers} out of ${totalQuestions} correct. Keep trying!`;
+            finalFeedback.className =
+              "text-center text-2xl font-bold mt-4 incorrect";
+          }
+        }
+
+        function showCertificate() {
+          certificateName.textContent = nameInput.value.trim() || "Champion";
+          certificateContainer.classList.remove("hidden");
+          setTimeout(() => {
+            certificateContainer
+              .querySelector("#certificate")
+              .classList.remove("scale-95");
+            certificateContainer
+              .querySelector("#certificate")
+              .classList.add("scale-100");
+          }, 50);
+        }
+
+        function resetGame() {
+          certificateContainer.classList.add("hidden");
+          finalFeedback.textContent = "";
+          generateQuestions();
+          renderActivities();
+        }
+
+        function preparePrintableWorksheet() {
+          let html = printableWorksheet.querySelector(
+            ".p-header, .p-name-date"
+          ).outerHTML;
+          allQuestions.forEach((section) => {
+            html += `<div class="p-section">
+                            <h2 class="p-section-title">${section.title}</h2>
+                            <div class="p-grid">`;
+            section.questions.forEach((q) => {
+              html += `<div class="p-item">${q.text.replace(
+                /<[^>]*>?/gm,
+                ""
+              )} __________</div>`;
+            });
+            html += `</div></div>`;
+          });
+          html += `
+                <div id="printable-certificate" class="p-section">
+                    <div style="font-size: 5rem; text-align:center;">🏆</div>
+                    <h2 style="font-size: 24pt; text-align:center; font-weight: 700;">Certificate of Achievement</h2>
+                    <p style="font-size: 14pt; text-align:center;">This is awarded to</p>
+                    <div id="printable-cert-name" style="font-size: 20pt; text-align:center; font-weight: bold; border-bottom: 2px solid #333; margin: 1rem auto; width: 80%;"></div>
+                    <p style="font-size: 14pt; text-align:center;">for mastering the Math Practice Hub exercises!</p>
+                </div>
+             `;
+          printableWorksheet.innerHTML = html;
+        }
+
+        checkAllButton.addEventListener("click", checkAllAnswers);
+        playAgainBtn.addEventListener("click", resetGame);
+        printBtn.addEventListener("click", () => {
+          preparePrintableWorksheet();
+          document.getElementById("printable-cert-name").textContent =
+            nameInput.value.trim() || ".......................";
+          window.print();
+        });
+
+        resetGame(); // Initial load
+      });
+    </script>
+  </body>
+</html>
