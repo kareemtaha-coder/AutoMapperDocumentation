@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شرح Product DTO مع AutoMapper</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+        /* Style for the sidebar */
+        .sidebar-link {
+            transition: all 0.2s ease-in-out;
+            border-right: 3px solid transparent;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #374151;
+            border-right-color: #6366f1;
+            transform: translateX(-2px);
+        }
+        /* Ensure code blocks are LTR */
+        pre[class*="language-"] {
+            direction: ltr;
+            text-align: left;
+        }
+        .prose h2 {
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-72 bg-gray-800 h-screen sticky top-0 p-6 hidden lg:block shadow-lg">
+            <h1 class="text-2xl font-bold text-white mb-8">
+                <span class="text-indigo-400">DTO</span> و <span class="text-indigo-400">AutoMapper</span>
+            </h1>
+            <nav id="sidebar-nav">
+                <a href="#introduction" class="block py-2.5 px-4 rounded sidebar-link font-semibold">المقدمة: لماذا DTO؟</a>
+                <a href="#step1" class="block py-2.5 px-4 rounded sidebar-link font-semibold">1. تعريف المشكلة</a>
+                <a href="#step2" class="block py-2.5 px-4 rounded sidebar-link font-semibold">2. إنشاء الـ DTO</a>
+                <a href="#step3" class="block py-2.5 px-4 rounded sidebar-link font-semibold">3. تثبيت AutoMapper</a>
+                <a href="#step4" class="block py-2.5 px-4 rounded sidebar-link font-semibold">4. إعداد قواعد التحويل</a>
+                <a href="#step5" class="block py-2.5 px-4 rounded sidebar-link font-semibold">5. تفعيل الحقن التلقائي</a>
+                <a href="#step6" class="block py-2.5 px-4 rounded sidebar-link font-semibold">6. تحديث Controller</a>
+                <a href="#step7" class="block py-2.5 px-4 rounded sidebar-link font-semibold">7. النتيجة النهائية</a>
+                <a href="#conclusion" class="block py-2.5 px-4 rounded sidebar-link font-semibold">الخلاصة</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 sm:p-8 md:p-12">
+            <div class="max-w-4xl mx-auto prose prose-invert prose-lg">
+
+                <!-- Introduction Section -->
+                <section id="introduction">
+                    <h2 class="text-3xl font-bold text-indigo-400">المقدمة: لماذا نحتاج إلى كائنات نقل البيانات (DTO)؟</h2>
+                    <p>عند بناء واجهات برمجة التطبيقات (APIs)، غالبًا ما نقوم بإرجاع كائنات تأتي مباشرة من قاعدة البيانات (Entities). هذه الطريقة قد تكون سريعة، لكنها تسبب مشاكل كبيرة، خاصة للـ Front-End.</p>
+                    <p>المشكلة الأساسية هي أن شكل البيانات هذا يحتوي على كائنات متداخلة (Nested Objects) تمثل الجداول المرتبطة. هذا يجعل استهلاك البيانات في الواجهة الأمامية معقدًا وغير فعال.</p>
+                    <p class="font-semibold text-indigo-300">الحل هو "تسطيح" (Flatten) هذا الكائن ليكون بسيطًا وسهل التعامل معه. هنا يأتي دور نمط DTO (Data Transfer Object) ومكتبة AutoMapper لتسهيل هذه العملية.</p>
+                </section>
+
+                <!-- Step 1: The Problem -->
+                <section id="step1" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخطوة الأولى: تعريف المشكلة</h2>
+                    <p>لنفترض أن لدينا كائن `Product` مرتبط بكائن `ProductBrand` و `ProductType`. عند طلب المنتجات من الـ API، قد تبدو النتيجة بهذا الشكل المعقد:</p>
+                    <pre><code class="language-json">
+[
+  {
+    "id": 1,
+    "name": "منتج رقم واحد",
+    "discription": "وصف المنتج هنا...",
+    "pictureUrl": "images/product1.png",
+    "price": 150.50,
+    "productType": {
+      "id": 1,
+      "name": "ملابس"
+    },
+    "productBrand": {
+      "id": 2,
+      "name": "ماركة عالمية"
+    },
+    "productTypeId": 1,
+    "productBrandId": 2
+  }
+]
+                    </code></pre>
+                    <p>لاحظ كيف أن `productType` و `productBrand` عبارة عن كائنات كاملة. الـ Front-End غالبًا ما يحتاج فقط إلى أسماء النوع والماركة، وليس كل تفاصيلها. هذا الشكل يرسل بيانات غير ضرورية ويزيد من تعقيد কোড الواجهة الأمامية.</p>
+                </section>
+
+                <!-- Step 2: Creating the DTO -->
+                <section id="step2" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخطوة الثانية: إنشاء كائن نقل البيانات (DTO)</h2>
+                    <p>الـ DTO هو كلاس بسيط يمثل الشكل النهائي الذي نريد أن تكون عليه البيانات عند إرسالها للمستخدم. سنقوم بإنشاء مجلد جديد باسم `Dtos` داخل مشروع الـ API ونضيف الكلاس التالي:</p>
+                    <pre><code class="language-csharp">
+// Dtos/ProductToReturnDto.cs
+
+public class ProductToReturnDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Discription { get; set; }
+    public string PictureUrl { get; set; }
+    public decimal Price { get; set; }
+    
+    // لقد قمنا بتسطيح الكائنات هنا
+    public string productType { get; set; } // سيحتوي على اسم النوع
+    public string productBrand { get; set; } // سيحتوي على اسم الماركة
+}
+                    </code></pre>
+                    <p>لاحظ أننا استبدلنا الكائنات المعقدة `productType` و `productBrand` بخصائص من نوع `string`. هذا هو الشكل المسطح والبسيط الذي نريده.</p>
+                </section>
+
+                <!-- Step 3: Installing AutoMapper -->
+                <section id="step3" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخطوة الثالثة: تثبيت AutoMapper</h2>
+                    <p>AutoMapper هي مكتبة رائعة تقوم بتحويل كائن من نوع إلى آخر بشكل تلقائي بناءً على قواعد نحددها. لتثبيتها في مشروعك، افتح الـ NuGet Package Manager Console ونفذ الأمر التالي:</p>
+                    <pre><code class="language-powershell">
+Install-Package AutoMapper.Extensions.Microsoft.DependencyInjection
+                    </code></pre>
+                    <p>هذه الحزمة تقوم بتثبيت AutoMapper وتسهل عملية تسجيله في خدمات المشروع (Dependency Injection).</p>
+                </section>
+
+                <!-- Step 4: Mapping Profile -->
+                <section id="step4" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخطوة الرابعة: إعداد قواعد التحويل (Mapping Profile)</h2>
+                    <p>نحتاج الآن لإخبار AutoMapper بكيفية تحويل كائن `Product` إلى `ProductToReturnDto`. نقوم بذلك عن طريق إنشاء كلاس جديد يرث من `Profile`.</p>
+                     <p>يمكنك إنشاء مجلد جديد باسم `Helpers` ووضع هذا الكلاس بداخله.</p>
+                    <pre><code class="language-csharp">
+// Helpers/MappingProfiles.cs
+
+using AutoMapper;
+using Core.Entities; // Your entities namespace
+using API.Dtos;     // Your DTOs namespace
+
+public class MappingProfiles : Profile
+{
+    public MappingProfiles()
+    {
+        CreateMap<Product, ProductToReturnDto>()
+            .ForMember(d => d.productBrand, o => o.MapFrom(s => s.productBrand.Name))
+            .ForMember(d => d.productType, o => o.MapFrom(s => s.productType.Name));
+    }
+}
+                    </code></pre>
+                    <div class="bg-gray-800 p-4 rounded-lg mt-4 border-r-4 border-indigo-500">
+                        <h4 class="font-bold text-lg text-white">شرح الكود:</h4>
+                        <ul class="list-disc pr-6 mt-2 space-y-2">
+                            <li><code>CreateMap&lt;Product, ProductToReturnDto&gt;()</code>: نُعرّف قاعدة تحويل من المصدر (`Product`) إلى الوجهة (`ProductToReturnDto`).</li>
+                            <li><code>.ForMember(...)</code>: نستخدمها لتحديد قاعدة خاصة لحقل معين في الوجهة.</li>
+                            <li><code>d => d.productBrand</code>: نحدد حقل الوجهة وهو `productBrand` في `ProductToReturnDto`.</li>
+                            <li><code>o => o.MapFrom(s => s.productBrand.Name)</code>: نحدد مصدر القيمة لهذا الحقل. نقول له: "خذ القيمة من خاصية `Name` الموجودة داخل الكائن المتداخل `productBrand` في الكائن المصدر (`Product`)".</li>
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Step 5: Dependency Injection -->
+                <section id="step5" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخطوة الخامسة: تفعيل الحقن التلقائي (Dependency Injection)</h2>
+                    <p>لكي نتمكن من استخدام AutoMapper في المشروع (مثلاً في الـ Controllers)، يجب أن نقوم بتسجيله ضمن الخدمات في ملف `Program.cs` (في .NET 6+).</p>
+                    <pre><code class="language-csharp">
+// Program.cs
+
+// ... other services
+builder.Services.AddControllers();
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
+// ... other middleware
+                    </code></pre>
+                    <p>هذا السطر يقوم بالبحث في المشروع عن كل الكلاسات التي ترث من `Profile` (مثل `MappingProfiles` الذي أنشأناه) ويقوم بتسجيل كل قواعد التحويل الموجودة بداخلها.</p>
+                </section>
+                
+                <!-- Step 6: Refactor Controller -->
+                <section id="step6" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخطوة السادسة: تحديث الـ Controller لاستخدام الـ DTO</h2>
+                    <p>الآن كل شيء جاهز. الخطوة الأخيرة هي استخدام AutoMapper في الـ `ProductsController` لتحويل النتائج قبل إرسالها.</p>
+                    <pre><code class="language-csharp">
+// Controllers/ProductsController.cs
+
+public class ProductsController : BaseController
+{
+    private readonly IGenericRepository<Product> _productRepository;
+    private readonly IMapper _mapper; // 1. حقن الواجهة IMapper
+
+    public ProductsController(IGenericRepository<Product> productRepository, IMapper mapper)
+    {
+        _productRepository = productRepository;
+        _mapper = mapper; // 2. إسنادها للمتغير الخاص
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetAll()
+    {
+        var spec = new productWithBrandAndTypeSpecification();
+        var products = await _productRepository.GetAllWithSpecAsync(spec);
+
+        // 3. استخدام الماب لتحويل النتيجة
+        var data = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products);
+        return Ok(data);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProductToReturnDto>> GetAllById(int id)
+    {
+        var spec = new productWithBrandAndTypeSpecification(id);
+        var product = await _productRepository.GetByIdWithSpecAsync(spec);
+
+        // 4. استخدام الماب لتحويل منتج واحد
+        var data = _mapper.Map<Product, ProductToReturnDto>(product);
+        return Ok(data);
+    }
+}
+                    </code></pre>
+                    <p>كما ترى، قمنا بحقن `IMapper` واستخدمنا ميثود `.Map()` لتحويل كائنات `Product` إلى `ProductToReturnDto` بسطر واحد فقط!</p>
+                </section>
+                
+                <!-- Step 7: The Final Result -->
+                <section id="step7" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخطوة السابعة: النتيجة النهائية</h2>
+                    <p>الآن، عند طلب نفس الـ API، ستحصل على نتيجة نظيفة، مسطحة، وجاهزة للاستخدام في الواجهة الأمامية بكل سهولة:</p>
+                    <pre><code class="language-json">
+[
+  {
+    "id": 1,
+    "name": "منتج رقم واحد",
+    "discription": "وصف المنتج هنا...",
+    "pictureUrl": "images/product1.png",
+    "price": 150.50,
+    "productType": "ملابس",
+    "productBrand": "ماركة عالمية"
+  }
+]
+                    </code></pre>
+                    <p>قارن هذا الشكل البسيط بالشكل المعقد في الخطوة الأولى. لقد أصبحت الـ API الآن أفضل بكثير!</p>
+                </section>
+                
+                <!-- Conclusion -->
+                <section id="conclusion" class="mt-12">
+                    <h2 class="text-2xl font-bold">الخلاصة</h2>
+                    <p>استخدام نمط DTO مع AutoMapper هو ممارسة احترافية عند بناء واجهات برمجية (APIs) قوية وقابلة للتطوير. الفوائد الرئيسية هي:</p>
+                    <ul class="list-disc pr-6 mt-4 space-y-3">
+                        <li><strong class="text-indigo-300">فصل الاهتمامات (Separation of Concerns):</strong> فصل شكل البيانات الداخلي (Database Entities) عن شكل البيانات الخارجي (API Response).</li>
+                        <li><strong class="text-indigo-300">API أنظف وأبسط:</strong> تقديم بيانات واضحة ومسطحة سهلة الاستهلاك من قبل المطورين الآخرين (خصوصًا Front-End).</li>
+                        <li><strong class="text-indigo-300">أمان أفضل:</strong> يمكنك إخفاء الخصائص الحساسة الموجودة في الـ Entity ومنع عرضها في الـ API.</li>
+                        <li><strong class="text-indigo-300">مرونة في التطوير:</strong> يمكنك تغيير بنية قاعدة البيانات الداخلية دون التأثير على مستهلكي الـ API طالما أن DTO لم يتغير.</li>
+                    </ul>
+                </section>
+            </div>
+            
+      
+        </main>
+    </div>
+
+    <script>
+        // Simple script to highlight active sidebar link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLi = document.querySelectorAll('#sidebar-nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLi.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + current) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize active state on load
+        document.querySelector('#sidebar-nav a').classList.add('active');
+    </script>
+</body>
+</html>
