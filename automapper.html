@@ -38,15 +38,6 @@
             background: #6366f1;
         }
         /* Style for the sidebar */
-        .sidebar-link {
-            transition: all 0.2s ease-in-out;
-            border-right: 3px solid transparent;
-        }
-        .sidebar-link:hover, .sidebar-link.active {
-            background-color: #374151;
-            border-right-color: #6366f1;
-            transform: translateX(-2px);
-        }
         /* Ensure code blocks are LTR */
         pre[class*="language-"] {
             direction: ltr;
@@ -55,6 +46,15 @@
         .prose h2 {
             border-bottom: 2px solid #4f46e5;
             padding-bottom: 0.5rem;
+        }
+        .sidebar-link {
+            transition: all 0.2s ease-in-out;
+            border-right: 3px solid transparent;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #374151;
+            border-right-color: #6366f1;
+            transform: translateX(-2px);
         }
     </style>
 </head>
