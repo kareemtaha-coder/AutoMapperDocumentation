@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مغامرة القيم والأخلاق للأطفال</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Changa:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f5a623;
+        --correct-color: #7ed321;
+        --incorrect-color: #d0021b;
+        --card-bg-color: rgba(255, 255, 255, 0.95);
+        --magic-purple: #8b5cf6;
+        --happy-pink: #ec4899;
+      }
+
+      body {
+        font-family: "Changa", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        overflow-x: hidden;
+      }
+
+      .stars-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(255, 255, 255, 0.1) 1px,
+            transparent 1px
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(255, 255, 255, 0.15) 1px,
+            transparent 1px
+          ),
+          radial-gradient(
+            circle at 40% 80%,
+            rgba(255, 255, 255, 0.1) 1px,
+            transparent 1px
+          );
+        background-size: 200px 200px, 300px 300px, 150px 150px;
+        animation: twinkle 10s linear infinite;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-20px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes pulse-glow {
+        0% {
+          box-shadow: 0 0 5px var(--secondary-color);
+        }
+        50% {
+          box-shadow: 0 0 20px var(--secondary-color),
+            0 0 30px var(--secondary-color);
+        }
+        100% {
+          box-shadow: 0 0 5px var(--secondary-color);
+        }
+      }
+
+      .page-container {
+        background-color: var(--card-bg-color);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 900px;
+        margin: 2rem auto;
+        overflow: hidden;
+        border: 4px solid white;
+        border-top: 12px solid var(--secondary-color);
+        position: relative;
+        z-index: 1;
+      }
+
+      .main-header {
+        padding: 1.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--magic-purple)
+        );
+        color: white;
+        text-align: center;
+      }
+      .institute-logo {
+        font-weight: 700;
+        background: linear-gradient(45deg, white, #f0f0f0);
+        color: var(--primary-color);
+        padding: 0.8rem 1.5rem;
+        border-radius: 20px;
+        font-size: 1.4rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .intro-header {
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--magic-purple)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        animation: bounce 2s infinite;
+      }
+
+      .action-button {
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--magic-purple)
+        );
+        color: white;
+        font-weight: 700;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 0 #357abd;
+        font-size: 1.3rem;
+      }
+      .action-button:hover {
+        transform: translateY(-3px);
+        animation: pulse-glow 2s infinite;
+      }
+      .action-button:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0 #357abd;
+      }
+
+      .secondary-button {
+        background: linear-gradient(45deg, #90a4ae, #607d8b);
+        box-shadow: 0 6px 0 #455a64;
+      }
+      .secondary-button:active {
+        box-shadow: 0 2px 0 #455a64;
+      }
+
+      .quiz-option {
+        display: block;
+        width: 100%;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        text-align: right;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border: 3px solid #dee2e6;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 1.3rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      .quiz-option:hover {
+        border-color: var(--secondary-color);
+        transform: scale(1.03) rotate(1deg);
+      }
+      .quiz-option.selected {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, #ebf5ff, #d1ecff);
+        color: var(--primary-color);
+        font-weight: 700;
+      }
+      .quiz-option.correct {
+        background: linear-gradient(135deg, #f1fbef, #e8f5e8);
+        border-color: var(--correct-color);
+        color: #4caf50;
+        animation: bounce 0.6s ease;
+      }
+      .quiz-option.incorrect {
+        background: linear-gradient(135deg, #ffeeee, #ffe0e0);
+        border-color: var(--incorrect-color);
+        color: #d0021b;
+      }
+
+      .star-icon {
+        width: 24px;
+        height: 24px;
+        fill: var(--secondary-color);
+        display: inline-block;
+        margin: 0 2px;
+      }
+      #stars-container .star-icon {
+        width: 50px;
+        height: 50px;
+        animation: bounce 1s infinite;
+      }
+
+      .lesson-paragraph {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        line-height: 1.8;
+        color: #444;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 15px;
+        border-right: 4px solid var(--primary-color);
+      }
+      .lesson-icon {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        margin-top: 0.5rem;
+        color: var(--primary-color);
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 1rem 0;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          var(--correct-color),
+          var(--secondary-color)
+        );
+        transition: width 0.5s ease;
+        border-radius: 10px;
+      }
+
+      .hearts-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+      .heart {
+        font-size: 2rem;
+        color: #ff6b6b;
+        animation: heartbeat 1.5s infinite;
+      }
+      .heart.lost {
+        opacity: 0.3;
+        animation: none;
+      }
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      .achievement-badge {
+        background: linear-gradient(45deg, gold, orange);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin: 0.25rem;
+        display: inline-block;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        animation: bounce 2s infinite;
+      }
+
+      .mini-game-container {
+        background: linear-gradient(135deg, #ff9a9e, #fecfef);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 1rem 0;
+        text-align: center;
+      }
+      .drawing-tool {
+        background: white;
+        border: 2px solid var(--primary-color);
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .drawing-tool:hover,
+      .drawing-tool.active {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .memory-card {
+        width: 80px;
+        height: 80px;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        margin: 0.5rem;
+        perspective: 1000px;
+      }
+      .memory-card .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+      .memory-card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+      }
+      .card-front {
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--magic-purple)
+        );
+      }
+      .card-back {
+        background: white;
+        color: var(--primary-color);
+        border: 3px solid var(--primary-color);
+        transform: rotateY(180deg);
+        font-size: 2.5rem;
+        font-weight: bold;
+      }
+      .memory-card.matched .card-inner {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px var(--correct-color);
+      }
+      .memory-card.matched .card-front {
+        background: var(--correct-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars-bg"></div>
+
+    <div class="page-container">
+      <header class="main-header">
+        <div>
+          <div class="institute-logo">
+            <span>أكاديمية بنــــاء</span>
+            <svg class="star-icon" viewBox="0 0 24 24">
+              <path
+                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+              />
+            </svg>
+          </div>
+          <h2 class="text-3xl font-bold mt-4">مغامرة الأخلاق السحرية</h2>
+        </div>
+      </header>
+
+      <main class="p-6 md:p-10">
+        <!-- Introduction Section -->
+        <div id="introduction-section">
+          <div class="text-center mb-6">
+            <h1 class="intro-header">مرحباً بك في عالم الأخلاق السحري! ✨</h1>
+          </div>
+          <div class="text-content space-y-4">
+            <div class="lesson-paragraph">
+              <svg
+                class="lesson-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              <p>
+                مرحباً أيها البطل الصغير! 🌟 هل تعلم أن الأخلاق الحسنة هي مثل
+                السحر؟ إنها تجعلك محبوباً من الجميع وتنير قلبك بالسعادة!
+              </p>
+            </div>
+            <div class="lesson-paragraph">
+              <svg
+                class="lesson-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              <p>
+                نبينا الكريم محمد صلى الله عليه وسلم جاء ليعلمنا كيف نكون
+                أطفالاً رائعين بأخلاق جميلة. كان يحب الأطفال ويعاملهم بلطف
+                ومحبة! 💕
+              </p>
+            </div>
+          </div>
+          <div class="text-center mt-10 space-y-4">
+            <div class="hearts-container">
+              <span class="heart">💖</span><span class="heart">💖</span
+              ><span class="heart">💖</span>
+            </div>
+            <button id="start-adventure-btn" class="action-button">
+              🌟 لنبدأ المغامرة! 🌟
+            </button>
+          </div>
+        </div>
+
+        <!-- Game Mode Selection -->
+        <div id="game-mode-section" class="hidden text-center">
+          <h2 class="intro-header">اختر طريقة اللعب! 🎯</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <div class="mini-game-container">
+              <h3 class="text-2xl font-bold mb-4">🧠 اختبار المعرفة</h3>
+              <p class="mb-4">أجب على الأسئلة واكسب النجوم!</p>
+              <button id="quiz-mode-btn" class="action-button">
+                ابدأ الاختبار
+              </button>
+            </div>
+            <div class="mini-game-container">
+              <h3 class="text-2xl font-bold mb-4">🎨 ألعاب تفاعلية</h3>
+              <p class="mb-4">العب ألعاباً ممتعة وتعلم القيم!</p>
+              <button id="games-mode-btn" class="action-button">
+                العب الآن
+              </button>
+            </div>
+          </div>
+          <div class="text-center mt-6">
+            <button
+              id="back-to-intro-btn"
+              class="action-button secondary-button"
+            >
+              🏠 العودة للمقدمة
+            </button>
+          </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="hidden">
+          <div class="text-center mb-8">
+            <h2 class="intro-header">وقت الأسئلة المثيرة! 🎯</h2>
+            <div class="progress-bar">
+              <div
+                id="progress-fill"
+                class="progress-fill"
+                style="width: 0%"
+              ></div>
+            </div>
+            <p id="question-counter" class="text-lg font-bold mt-2"></p>
+          </div>
+          <div id="quiz-question-container" class="mb-6"></div>
+          <div
+            class="flex justify-center items-center space-x-4 space-x-reverse"
+          >
+            <button id="submit-answer-btn" class="action-button">
+              ✅ تأكيد إجابتي</button
+            ><button id="next-question-btn" class="hidden action-button">
+              ➡️ السؤال التالي
+            </button>
+          </div>
+          <div
+            id="feedback-message"
+            class="text-center mt-6 font-bold text-2xl h-16"
+          ></div>
+          <div class="text-center mt-4">
+            <div id="lives-container" class="hearts-container"></div>
+          </div>
+        </div>
+
+        <!-- Games Section -->
+        <div id="games-section" class="hidden">
+          <div class="text-center mb-8">
+            <h2 class="intro-header">الألعاب التعليمية! 🎮</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="mini-game-container">
+              <h3 class="text-xl font-bold mb-4">🎨 ارسم القيم</h3>
+              <canvas
+                id="drawing-canvas"
+                width="300"
+                height="200"
+                class="bg-white rounded-lg shadow-inner cursor-crosshair"
+              ></canvas>
+              <div class="mt-4">
+                <button class="drawing-tool active" data-color="#4A90E2">
+                  أزرق</button
+                ><button class="drawing-tool" data-color="#F5A623">
+                  برتقالي</button
+                ><button class="drawing-tool" data-color="#7ED321">أخضر</button
+                ><button class="drawing-tool" data-color="#D0021B">أحمر</button
+                ><button id="clear-drawing-btn" class="drawing-tool">
+                  مسح
+                </button>
+              </div>
+            </div>
+            <div class="mini-game-container">
+              <h3 class="text-xl font-bold mb-4">🧩 لعبة الذاكرة</h3>
+              <div
+                id="memory-game"
+                class="grid grid-cols-4 gap-2 justify-center"
+              ></div>
+              <button id="start-memory-btn" class="action-button mt-4">
+                ابدأ اللعبة
+              </button>
+            </div>
+          </div>
+          <div class="text-center mt-6">
+            <button
+              id="back-to-modes-btn"
+              class="action-button secondary-button"
+            >
+              🔙 العودة للألعاب
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="hidden text-center p-8">
+          <div class="text-center mb-6">
+            <h2 id="results-header" class="intro-header"></h2>
+          </div>
+          <div id="stars-container" class="mb-6 flex justify-center"></div>
+          <p
+            id="score-text"
+            class="text-3xl font-bold mb-4"
+            style="color: #444"
+          ></p>
+          <div id="achievements-container" class="mb-6"></div>
+          <div
+            class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 sm:space-x-reverse mt-6"
+          >
+            <button id="retry-btn" class="action-button">
+              🔄 ألعب مرة أخرى</button
+            ><button id="main-menu-btn" class="action-button secondary-button">
+              🏠 العودة للقائمة
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- Get All UI Elements ---
+        const pageSections = {
+          intro: document.getElementById("introduction-section"),
+          modes: document.getElementById("game-mode-section"),
+          quiz: document.getElementById("quiz-section"),
+          games: document.getElementById("games-section"),
+          results: document.getElementById("results-section"),
+        };
+        const startAdventureBtn = document.getElementById(
+          "start-adventure-btn"
+        );
+        const quizModeBtn = document.getElementById("quiz-mode-btn");
+        const gamesModeBtn = document.getElementById("games-mode-btn");
+        const submitAnswerBtn = document.getElementById("submit-answer-btn");
+        const nextQuestionBtn = document.getElementById("next-question-btn");
+        const retryBtn = document.getElementById("retry-btn");
+
+        document
+          .getElementById("back-to-intro-btn")
+          .addEventListener("click", () => switchSection("intro"));
+        document
+          .getElementById("back-to-modes-btn")
+          .addEventListener("click", () => switchSection("modes"));
+        document
+          .getElementById("main-menu-btn")
+          .addEventListener("click", () => switchSection("modes"));
+
+        const quizQuestionContainer = document.getElementById(
+          "quiz-question-container"
+        );
+        const feedbackMessage = document.getElementById("feedback-message");
+        const livesContainer = document.getElementById("lives-container");
+        const progressFill = document.getElementById("progress-fill");
+        const questionCounter = document.getElementById("question-counter");
+        const resultsHeader = document.getElementById("results-header");
+        const scoreText = document.getElementById("score-text");
+        const starsContainer = document.getElementById("stars-container");
+        const achievementsContainer = document.getElementById(
+          "achievements-container"
+        );
+
+        const drawingCanvas = document.getElementById("drawing-canvas");
+        const drawingTools = document.querySelectorAll(".drawing-tool");
+        const clearDrawingBtn = document.getElementById("clear-drawing-btn");
+        const memoryGameContainer = document.getElementById("memory-game");
+        const startMemoryBtn = document.getElementById("start-memory-btn");
+
+        let lives = 3;
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let lastQuizContext = "quiz";
+
+        const quizData = [
+          {
+            question: "ما هو الشيء الجميل الذي هو روح ديننا الحنيف؟",
+            options: ["اللعب", "الأخلاق الحسنة", "النوم"],
+            correct: "الأخلاق الحسنة",
+          },
+          {
+            question: "لماذا أرسل الله نبينا محمد صلى الله عليه وسلم؟",
+            options: [
+              "ليعلمنا التجارة",
+              "لإتمام مكارم الأخلاق",
+              "لبناء البيوت",
+            ],
+            correct: "لإتمام مكارم الأخلاق",
+          },
+          {
+            question: "كيف نتعامل مع والدينا؟",
+            options: ["بالعصيان", "بالبر والإحسان", "بالإهمال"],
+            correct: "بالبر والإحسان",
+          },
+          {
+            question: "إذا وجدتَ شيئًا ليس لك، ماذا تفعل؟",
+            options: ["آخذه لي", "أبحث عن صاحبه لأعيده", "أتركه في مكانه"],
+            correct: "أبحث عن صاحبه لأعيده",
+          },
+          {
+            question: "ماذا نقول قبل أن نبدأ الأكل؟",
+            options: ["شكرًا", "بسم الله", "انتهيت"],
+            correct: "بسم الله",
+          },
+          {
+            question: "أن تكون صادقًا يعني...",
+            options: [
+              "أن تقول الحقيقة دائمًا",
+              "أن تكذب أحيانًا",
+              "أن لا تتكلم",
+            ],
+            correct: "أن تقول الحقيقة دائمًا",
+          },
+        ];
+        const memoryEmojis = ["💖", "🌟", "😊", "🙏", "🤝", "🎁"];
+
+        function switchSection(sectionName) {
+          Object.values(pageSections).forEach((sec) =>
+            sec.classList.add("hidden")
+          );
+          if (pageSections[sectionName]) {
+            pageSections[sectionName].classList.remove("hidden");
+          }
+        }
+
+        // --- Navigation ---
+        startAdventureBtn.addEventListener("click", () =>
+          switchSection("modes")
+        );
+        quizModeBtn.addEventListener("click", () => {
+          lastQuizContext = "quiz";
+          startQuiz();
+        });
+        gamesModeBtn.addEventListener("click", () => switchSection("games"));
+        retryBtn.addEventListener("click", () => {
+          if (lastQuizContext === "quiz") startQuiz();
+        });
+
+        function startQuiz() {
+          switchSection("quiz");
+          lives = 3;
+          score = 0;
+          currentQuestionIndex = 0;
+          updateLives();
+          displayQuestion();
+        }
+
+        function displayQuestion() {
+          const question = quizData[currentQuestionIndex];
+          quizQuestionContainer.innerHTML = `<h3 class="text-3xl font-bold mb-6 text-center">${question.question}</h3>`;
+          const optionsContainer = document.createElement("div");
+          optionsContainer.className = "space-y-4";
+          question.options.forEach((opt) => {
+            const btn = document.createElement("button");
+            btn.className = "quiz-option";
+            btn.textContent = opt;
+            btn.addEventListener("click", () => selectOption(btn));
+            optionsContainer.appendChild(btn);
+          });
+          quizQuestionContainer.appendChild(optionsContainer);
+
+          updateProgress();
+          feedbackMessage.innerHTML = "";
+          submitAnswerBtn.classList.remove("hidden");
+          nextQuestionBtn.classList.add("hidden");
+          submitAnswerBtn.disabled = false;
+        }
+
+        function selectOption(button) {
+          document
+            .querySelectorAll(".quiz-option.selected")
+            .forEach((btn) => btn.classList.remove("selected"));
+          button.classList.add("selected");
+        }
+
+        submitAnswerBtn.addEventListener("click", () => {
+          const selectedBtn = document.querySelector(".quiz-option.selected");
+          if (!selectedBtn) return;
+
+          submitAnswerBtn.disabled = true;
+          const isCorrect =
+            selectedBtn.textContent === quizData[currentQuestionIndex].correct;
+
+          document.querySelectorAll(".quiz-option").forEach((btn) => {
+            btn.disabled = true;
+            if (btn.textContent === quizData[currentQuestionIndex].correct)
+              btn.classList.add("correct");
+            else if (btn.classList.contains("selected"))
+              btn.classList.add("incorrect");
+          });
+
+          if (isCorrect) {
+            score++;
+            feedbackMessage.innerHTML =
+              '<span class="text-green-500">رائع! إجابة صحيحة! 🎉</span>';
+          } else {
+            lives--;
+            updateLives();
+            feedbackMessage.innerHTML =
+              '<span class="text-red-500">أوه! حاول مرة أخرى! 😟</span>';
+          }
+
+          const isGameOver =
+            lives === 0 || currentQuestionIndex === quizData.length - 1;
+          setTimeout(() => {
+            if (isGameOver) showResults();
+            else nextQuestionBtn.classList.remove("hidden");
+          }, 1500);
+
+          submitAnswerBtn.classList.add("hidden");
+        });
+
+        nextQuestionBtn.addEventListener("click", () => {
+          currentQuestionIndex++;
+          displayQuestion();
+        });
+
+        function updateProgress() {
+          const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+          progressFill.style.width = `${progress}%`;
+          questionCounter.textContent = `السؤال ${
+            currentQuestionIndex + 1
+          } من ${quizData.length}`;
+        }
+
+        function updateLives() {
+          livesContainer.innerHTML = Array.from(
+            { length: 3 },
+            (_, i) =>
+              `<span class="heart ${i >= lives ? "lost" : ""}">💖</span>`
+          ).join("");
+        }
+
+        function showResults() {
+          switchSection("results");
+          resultsHeader.textContent =
+            lives === 0 ? "حاول مرة أخرى! 😟" : "مبروك أيها البطل! 🎉";
+          scoreText.textContent = `لقد حصلت على ${score} إجابة صحيحة!`;
+          starsContainer.innerHTML = Array.from(
+            { length: score },
+            () =>
+              `<span class="star-icon"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>`
+          ).join("");
+          achievementsContainer.innerHTML =
+            score > quizData.length / 2
+              ? '<span class="achievement-badge">🌟 نجم الأخلاق 🌟</span>'
+              : "";
+        }
+
+        // --- Drawing Game ---
+        const ctx = drawingCanvas.getContext("2d");
+        let isDrawing = false,
+          lastX,
+          lastY;
+        let drawingColor = "#4A90E2";
+
+        function getPos(e) {
+          const rect = drawingCanvas.getBoundingClientRect();
+          const clientX = e.clientX || e.touches[0].clientX;
+          const clientY = e.clientY || e.touches[0].clientY;
+          return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function startDrawing(e) {
+          e.preventDefault();
+          isDrawing = true;
+          const pos = getPos(e);
+          [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        function draw(e) {
+          if (!isDrawing) return;
+          e.preventDefault();
+          const pos = getPos(e);
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(pos.x, pos.y);
+          ctx.strokeStyle = drawingColor;
+          ctx.lineWidth = 5;
+          ctx.lineCap = "round";
+          ctx.stroke();
+          [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        drawingCanvas.addEventListener("mousedown", startDrawing);
+        drawingCanvas.addEventListener("mousemove", draw);
+        drawingCanvas.addEventListener("mouseup", () => (isDrawing = false));
+        drawingCanvas.addEventListener("mouseout", () => (isDrawing = false));
+        drawingCanvas.addEventListener("touchstart", startDrawing);
+        drawingCanvas.addEventListener("touchmove", draw);
+        drawingCanvas.addEventListener("touchend", () => (isDrawing = false));
+
+        clearDrawingBtn.addEventListener("click", () =>
+          ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height)
+        );
+        drawingTools.forEach((tool) => {
+          if (tool.dataset.color)
+            tool.addEventListener("click", () => {
+              drawingColor = tool.dataset.color;
+              document
+                .querySelectorAll(".drawing-tool.active")
+                .forEach((t) => t.classList.remove("active"));
+              tool.classList.add("active");
+            });
+        });
+
+        // --- Memory Game ---
+        let flippedCards = [],
+          canFlip = true;
+
+        startMemoryBtn.addEventListener("click", () => {
+          memoryGameContainer.innerHTML = "";
+          canFlip = true;
+          flippedCards = [];
+          let cardEmojis = [...memoryEmojis, ...memoryEmojis].sort(
+            () => 0.5 - Math.random()
+          );
+
+          cardEmojis.forEach((emoji) => {
+            const card = document.createElement("div");
+            card.className = "memory-card";
+            card.dataset.emoji = emoji;
+            card.innerHTML = `<div class="card-inner"><div class="card-face card-front"></div><div class="card-face card-back">${emoji}</div></div>`;
+            card.addEventListener("click", () => {
+              if (
+                !canFlip ||
+                card.classList.contains("flipped") ||
+                card.classList.contains("matched")
+              )
+                return;
+              card.classList.add("flipped");
+              flippedCards.push(card);
+              if (flippedCards.length === 2) {
+                canFlip = false;
+                setTimeout(() => {
+                  const [c1, c2] = flippedCards;
+                  if (c1.dataset.emoji === c2.dataset.emoji) {
+                    c1.classList.add("matched");
+                    c2.classList.add("matched");
+                  } else {
+                    c1.classList.remove("flipped");
+                    c2.classList.remove("flipped");
+                  }
+                  flippedCards = [];
+                  canFlip = true;
+                }, 1000);
+              }
+            });
+            memoryGameContainer.appendChild(card);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

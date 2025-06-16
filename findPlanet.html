@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>مهمة الفضاء: إنقاذ كوكب نوميروس</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Cairo:wght@400;700&display=swap"
       rel="stylesheet"
@@ -42,6 +44,146 @@
         border: 2px solid rgba(139, 92, 246, 0.6);
         position: relative;
         z-index: 10;
+      }
+
+      /* إضافة أنماط نموذج الاسم */
+      .name-form {
+        background: linear-gradient(
+          135deg,
+          rgba(30, 27, 75, 0.9),
+          rgba(45, 35, 95, 0.7)
+        );
+        border: 2px solid rgba(251, 191, 36, 0.6);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+        margin-bottom: 2rem;
+      }
+
+      .name-input {
+        background: linear-gradient(135deg, #1e1b4b, #2d1b69);
+        border: 2px solid #fbbf24;
+        color: #f5f3ff;
+        border-radius: 0.75rem;
+        width: 300px;
+        height: 3rem;
+        font-size: 1.25rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        font-family: "Cairo", sans-serif;
+      }
+
+      .name-input:focus {
+        border-color: #fb923c;
+        box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        outline: none;
+      }
+
+      .start-btn {
+        background: linear-gradient(135deg, #fbbf24, #fb923c);
+        color: #1a1a1a;
+        font-weight: bold;
+        padding: 0.75rem 2rem;
+        border-radius: 2rem;
+        margin-top: 1rem;
+        border: none;
+        border-bottom: 4px solid #f59e0b;
+        transition: all 0.3s ease;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1rem;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .start-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4);
+      }
+
+      /* إضافة أنماط الشهادة */
+      .certificate {
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        color: #333;
+        border-radius: 1.5rem;
+        padding: 3rem;
+        text-align: center;
+        border: 8px solid #ffd700;
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+        position: relative;
+        overflow: hidden;
+        margin-top: 2rem;
+      }
+
+      .certificate::before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        border: 3px solid #ffd700;
+        border-radius: 1rem;
+        pointer-events: none;
+      }
+
+      .certificate-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 2.5rem;
+        color: #8b5cf6;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 1rem;
+      }
+
+      .certificate-subtitle {
+        font-size: 1.5rem;
+        color: #6b46c1;
+        margin-bottom: 2rem;
+      }
+
+      .certificate-name {
+        font-family: "Orbitron", sans-serif;
+        font-size: 3rem;
+        color: #dc2626;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 2rem 0;
+        padding: 1rem;
+        border-bottom: 3px solid #ffd700;
+        border-top: 3px solid #ffd700;
+      }
+
+      .certificate-text {
+        font-size: 1.25rem;
+        color: #374151;
+        margin: 1.5rem 0;
+        line-height: 1.8;
+      }
+
+      .certificate-date {
+        font-size: 1rem;
+        color: #6b7280;
+        margin-top: 2rem;
+      }
+
+      .download-btn {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        font-weight: bold;
+        padding: 0.75rem 2rem;
+        border-radius: 2rem;
+        margin-top: 1.5rem;
+        border: none;
+        border-bottom: 4px solid #047857;
+        transition: all 0.3s ease;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
       }
 
       .checkpoint {
@@ -301,46 +443,111 @@
     <div class="mission-control">
       <canvas class="particle-canvas" id="particle-canvas"></canvas>
 
-      <!-- Header -->
-      <div class="text-center mb-6">
-        <h1
-          style="font-family: 'Orbitron', sans-serif"
-          class="text-4xl md:text-5xl font-bold text-[#FBBF24] title-glow"
-        >
-          MISSION: FIND PLANET NUMEROS
-        </h1>
-        <p class="text-lg text-[#D8B4FE] mt-2">
-          اشحن طاقة مركبتك لإكمال المهمة!
-        </p>
-      </div>
-
-      <!-- Progress Bar (Fuel Level) -->
-      <div class="progress-bar-container mb-6">
-        <div id="progress-bar" class="progress-bar">FUEL: 0%</div>
-      </div>
-
-      <!-- The checkpoints will be dynamically unlocked -->
-      <div id="mission-path"></div>
-
-      <!-- Final Congratulations Message -->
-      <div
-        id="final-congrats"
-        class="hidden text-center mt-8 p-8 bg-gradient-to-br from-purple-800 via-indigo-900 to-blue-800 rounded-2xl border-4 border-yellow-400 relative overflow-hidden"
-      >
-        <canvas class="particle-canvas" id="celebration-canvas"></canvas>
+      <!-- نموذج إدخال الاسم - جديد -->
+      <div id="name-form" class="name-form">
         <h2
           style="font-family: 'Orbitron', sans-serif"
-          class="text-4xl font-bold text-yellow-300 relative z-10"
+          class="text-3xl font-bold text-[#FBBF24] mb-4"
         >
-          MISSION ACCOMPLISHED
+          مرحباً أيها المستكشف الشجاع!
         </h2>
-        <p class="text-2xl text-white mt-4 relative z-10">
-          لقد وصلت إلى كوكب نوميروس!
+        <p class="text-lg text-[#D8B4FE] mb-6">
+          قبل أن نبدأ مهمة إنقاذ كوكب نوميروس، أخبرنا ما اسمك؟
         </p>
-        <p class="text-7xl mt-4 animate-pulse relative z-10">🪐</p>
-        <p class="text-xl text-yellow-200 font-bold relative z-10">
-          أنت أعظم مستكشف في المجرة!
-        </p>
+        <div class="flex flex-col items-center gap-4">
+          <input
+            type="text"
+            id="student-name"
+            class="name-input"
+            placeholder="اكتب اسمك هنا..."
+            maxlength="30"
+          />
+          <button id="start-mission" class="start-btn">ابدأ المهمة! 🚀</button>
+        </div>
+      </div>
+
+      <!-- المحتوى الأساسي للمهمة -->
+      <div id="mission-content" class="hidden">
+        <!-- Header -->
+        <div class="text-center mb-6">
+          <h1
+            style="font-family: 'Orbitron', sans-serif"
+            class="text-4xl md:text-5xl font-bold text-[#FBBF24] title-glow"
+          >
+            MISSION: FIND PLANET NUMEROS
+          </h1>
+          <p class="text-lg text-[#D8B4FE] mt-2">
+            اشحن طاقة مركبتك لإكمال المهمة!
+          </p>
+          <p id="pilot-name" class="text-xl text-[#FBBF24] mt-2 font-bold"></p>
+        </div>
+
+        <!-- Progress Bar (Fuel Level) -->
+        <div class="progress-bar-container mb-6">
+          <div id="progress-bar" class="progress-bar">FUEL: 0%</div>
+        </div>
+
+        <!-- The checkpoints will be dynamically unlocked -->
+        <div id="mission-path"></div>
+
+        <!-- Final Congratulations Message -->
+        <div
+          id="final-congrats"
+          class="hidden text-center mt-8 p-8 bg-gradient-to-br from-purple-800 via-indigo-900 to-blue-800 rounded-2xl border-4 border-yellow-400 relative overflow-hidden"
+        >
+          <canvas class="particle-canvas" id="celebration-canvas"></canvas>
+          <h2
+            style="font-family: 'Orbitron', sans-serif"
+            class="text-4xl font-bold text-yellow-300 relative z-10"
+          >
+            MISSION ACCOMPLISHED
+          </h2>
+          <p class="text-2xl text-white mt-4 relative z-10">
+            لقد وصلت إلى كوكب نوميروس!
+          </p>
+          <p class="text-7xl mt-4 animate-pulse relative z-10">🪐</p>
+          <p class="text-xl text-yellow-200 font-bold relative z-10">
+            أنت أعظم مستكشف في المجرة!
+          </p>
+          <button id="get-certificate" class="download-btn mt-4 relative z-10">
+            احصل على شهادة التقدير! 🏆
+          </button>
+        </div>
+
+        <!-- شهادة التقدير - جديدة -->
+        <div id="certificate" class="certificate hidden">
+          <div class="text-8xl mb-4">🏆</div>
+          <h1 class="certificate-title">شهادة تقدير</h1>
+          <p class="certificate-subtitle">مهمة الفضاء: إنقاذ كوكب نوميروس</p>
+
+          <div class="my-8">
+            <p class="certificate-text">هذه الشهادة تُمنح للطالب المتميز</p>
+            <div id="certificate-name" class="certificate-name"></div>
+            <p class="certificate-text">
+              لإتمامه بنجاح مهمة إنقاذ كوكب نوميروس
+            </p>
+            <p class="certificate-text">
+              وإظهاره مهارات رائعة في الرياضيات والمنطق
+            </p>
+          </div>
+
+          <div class="flex justify-center items-center gap-8 mt-8">
+            <div class="text-6xl">🚀</div>
+            <div class="text-6xl">🪐</div>
+            <div class="text-6xl">⭐</div>
+          </div>
+
+          <p class="certificate-date" id="certificate-date"></p>
+
+          <div class="mt-6">
+            <button id="download-certificate" class="download-btn">
+              تحميل الشهادة 📥
+            </button>
+            <button id="restart-mission" class="start-btn mr-4">
+              مهمة جديدة 🔄
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -349,6 +556,8 @@
       class SpaceAnimation {
         constructor() {
           this.canvas = document.getElementById("space-canvas");
+          if (!this.canvas) return;
+
           this.ctx = this.canvas.getContext("2d");
           this.stars = [];
           this.nebula = [];
@@ -533,6 +742,8 @@
       class ParticleSystem {
         constructor(canvas) {
           this.canvas = canvas;
+          if (!this.canvas) return;
+
           this.ctx = canvas.getContext("2d");
           this.particles = [];
           this.resize();
@@ -590,9 +801,12 @@
       class CelebrationParticles {
         constructor(canvas) {
           this.canvas = canvas;
+          if (!this.canvas) return;
+
           this.ctx = canvas.getContext("2d");
           this.particles = [];
           this.fireworks = [];
+          this.intervals = [];
           this.resize();
           this.animate();
           this.startCelebration();
@@ -605,14 +819,16 @@
 
         startCelebration() {
           // Create continuous fireworks
-          setInterval(() => {
+          const fireworkInterval = setInterval(() => {
             this.createFirework();
           }, 800);
 
           // Create falling stars
-          setInterval(() => {
+          const starInterval = setInterval(() => {
             this.createFallingStar();
           }, 300);
+
+          this.intervals.push(fireworkInterval, starInterval);
         }
 
         createFirework() {
@@ -710,15 +926,24 @@
 
           requestAnimationFrame(() => this.animate());
         }
+
+        destroy() {
+          this.intervals.forEach((interval) => clearInterval(interval));
+          this.intervals = [];
+        }
       }
 
-      // Initialize animations
-      const spaceAnimation = new SpaceAnimation();
-      const particleSystem = new ParticleSystem(
-        document.getElementById("particle-canvas")
-      );
+      // Game state
+      let gameState = {
+        playerName: "",
+        spaceAnimation: null,
+        particleSystem: null,
+        celebrationParticles: null,
+        checkpointsCompleted: 0,
+        checkpointElements: [],
+      };
 
-      // Mission data and game logic
+      // Mission data
       const missionData = [
         {
           type: "checkpoint",
@@ -773,24 +998,190 @@
         },
       ];
 
-      const missionPathContainer = document.getElementById("mission-path");
-      const progressBar = document.getElementById("progress-bar");
-      const finalCongrats = document.getElementById("final-congrats");
+      // Initialize game when DOM is loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeGame();
+      });
 
-      const checkpointElements = [];
-      let checkpointsCompleted = 0;
-      const totalCheckpoints = missionData.filter(
-        (item) => item.type === "checkpoint"
-      ).length;
+      function initializeGame() {
+        // Initialize animations
+        gameState.spaceAnimation = new SpaceAnimation();
 
-      function checkAnswer(index) {
-        const item = missionData[index];
-        const element = checkpointElements[index];
+        const particleCanvas = document.getElementById("particle-canvas");
+        if (particleCanvas) {
+          gameState.particleSystem = new ParticleSystem(particleCanvas);
+        }
 
+        // Set up name form
+        setupNameForm();
+
+        // Set up mission
+        setupMission();
+
+        // Set up certificate
+        setupCertificate();
+
+        // Add resize handler
+        window.addEventListener("resize", () => {
+          if (gameState.particleSystem) {
+            gameState.particleSystem.resize();
+          }
+        });
+      }
+
+      function setupNameForm() {
+        const startButton = document.getElementById("start-mission");
+        const nameInput = document.getElementById("student-name");
+        const nameForm = document.getElementById("name-form");
+        const missionContent = document.getElementById("mission-content");
+
+        if (startButton && nameInput && nameForm && missionContent) {
+          startButton.addEventListener("click", function () {
+            const name = nameInput.value.trim();
+            if (name) {
+              gameState.playerName = name;
+              nameForm.classList.add("hidden");
+              missionContent.classList.remove("hidden");
+
+              // Update pilot name display
+              const pilotNameElement = document.getElementById("pilot-name");
+              if (pilotNameElement) {
+                pilotNameElement.textContent = `الطيار: ${name}`;
+              }
+
+              // Start the mission
+              startMission();
+            } else {
+              alert("يرجى إدخال اسمك أولاً!");
+            }
+          });
+
+          nameInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              startButton.click();
+            }
+          });
+        }
+      }
+
+      function setupMission() {
+        const missionPathContainer = document.getElementById("mission-path");
+        if (!missionPathContainer) return;
+
+        const totalCheckpoints = missionData.filter(
+          (item) => item.type === "checkpoint"
+        ).length;
+
+        // Build the mission dynamically
+        missionData.forEach((item, index) => {
+          const element = document.createElement("div");
+
+          if (item.type === "checkpoint") {
+            element.className = "checkpoint";
+            let promptHTML = item.prompt
+              ? `<p class="mb-4 text-purple-300">${item.prompt}</p>`
+              : "";
+
+            element.innerHTML = `
+        <h3>${item.title}</h3>
+        ${promptHTML}
+        <div class="flex justify-center items-center gap-4 mb-4">
+          <p class="text-3xl font-bold text-yellow-300">${item.question}</p>
+          <input type="number" class="answer-input p-3 text-center" placeholder="؟">
+        </div>
+        <button class="check-btn">${item.button}</button>
+        <div class="feedback-correct hidden mt-4 p-4 bg-green-900 bg-opacity-60 rounded-xl text-green-300 font-bold border border-green-500">
+          <p>${item.feedback.correct}</p>
+        </div>
+        <div class="feedback-incorrect hidden mt-4 p-4 bg-red-900 bg-opacity-60 rounded-xl text-red-300 font-bold border border-red-500">
+          <p>${item.feedback.incorrect}</p>
+        </div>
+      `;
+
+            const checkBtn = element.querySelector(".check-btn");
+            const answerInput = element.querySelector(".answer-input");
+
+            if (checkBtn && answerInput) {
+              checkBtn.addEventListener("click", () =>
+                checkAnswer(index, item, element, totalCheckpoints)
+              );
+              answerInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter")
+                  checkAnswer(index, item, element, totalCheckpoints);
+              });
+            }
+
+            // Add hover effects for particles
+            element.addEventListener("mouseenter", () => {
+              if (
+                element.classList.contains("active") &&
+                gameState.particleSystem
+              ) {
+                const rect = element.getBoundingClientRect();
+                const containerRect = document
+                  .getElementById("particle-canvas")
+                  .getBoundingClientRect();
+                gameState.particleSystem.addParticles(
+                  rect.left + rect.width / 2 - containerRect.left,
+                  rect.top + rect.height / 2 - containerRect.top,
+                  "#A78BFA",
+                  5
+                );
+              }
+            });
+          } else {
+            // It's a path
+            element.className = "path";
+            element.innerHTML = item.icon;
+          }
+
+          missionPathContainer.appendChild(element);
+          gameState.checkpointElements.push(element);
+        });
+      }
+
+      function startMission() {
+        // Start the mission by unlocking the first checkpoint
+        if (gameState.checkpointElements[0]) {
+          gameState.checkpointElements[0].classList.add("unlocked", "active");
+        }
+
+        // Add some ambient particles on load
+        setTimeout(() => {
+          if (gameState.particleSystem) {
+            for (let i = 0; i < 3; i++) {
+              setTimeout(() => {
+                gameState.particleSystem.addParticles(
+                  Math.random() * gameState.particleSystem.canvas.width,
+                  Math.random() * gameState.particleSystem.canvas.height,
+                  "#A78BFA",
+                  3
+                );
+              }, i * 1000);
+            }
+          }
+        }, 2000);
+
+        // Add periodic ambient effects
+        setInterval(() => {
+          if (Math.random() < 0.3 && gameState.particleSystem) {
+            gameState.particleSystem.addParticles(
+              Math.random() * gameState.particleSystem.canvas.width,
+              Math.random() * gameState.particleSystem.canvas.height,
+              Math.random() > 0.5 ? "#A78BFA" : "#FBBF24",
+              2
+            );
+          }
+        }, 3000);
+      }
+
+      function checkAnswer(index, item, element, totalCheckpoints) {
         const checkBtn = element.querySelector(".check-btn");
         const answerInput = element.querySelector(".answer-input");
         const feedbackCorrect = element.querySelector(".feedback-correct");
         const feedbackIncorrect = element.querySelector(".feedback-incorrect");
+
+        if (!answerInput || !feedbackCorrect || !feedbackIncorrect) return;
 
         feedbackCorrect.classList.add("hidden");
         feedbackIncorrect.classList.add("hidden");
@@ -802,52 +1193,65 @@
           feedbackCorrect.classList.remove("hidden");
           answerInput.classList.add("border-green-400");
           answerInput.disabled = true;
-          checkBtn.disabled = true;
+          if (checkBtn) checkBtn.disabled = true;
           element.classList.remove("active");
 
           // Add success particles
-          const rect = element.getBoundingClientRect();
-          const containerRect = document
-            .getElementById("particle-canvas")
-            .getBoundingClientRect();
-          particleSystem.addParticles(
-            rect.left + rect.width / 2 - containerRect.left,
-            rect.top + rect.height / 2 - containerRect.top,
-            "#00FF00",
-            15
-          );
+          if (gameState.particleSystem) {
+            const rect = element.getBoundingClientRect();
+            const containerRect = document
+              .getElementById("particle-canvas")
+              .getBoundingClientRect();
+            gameState.particleSystem.addParticles(
+              rect.left + rect.width / 2 - containerRect.left,
+              rect.top + rect.height / 2 - containerRect.top,
+              "#00FF00",
+              15
+            );
+          }
 
           // Update progress
-          checkpointsCompleted++;
+          gameState.checkpointsCompleted++;
           const percentage = Math.round(
-            (checkpointsCompleted / totalCheckpoints) * 100
+            (gameState.checkpointsCompleted / totalCheckpoints) * 100
           );
-          progressBar.style.width = `${percentage}%`;
-          progressBar.textContent = `FUEL: ${percentage}%`;
+          const progressBar = document.getElementById("progress-bar");
+          if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `FUEL: ${percentage}%`;
+          }
 
           // Unlock next part of the mission
           const nextPathIndex = index + 1;
           const nextCheckpointIndex = index + 2;
 
-          if (checkpointElements[nextPathIndex]) {
+          if (gameState.checkpointElements[nextPathIndex]) {
             setTimeout(() => {
-              checkpointElements[nextPathIndex].classList.add("unlocked");
-              if (checkpointElements[nextCheckpointIndex]) {
+              gameState.checkpointElements[nextPathIndex].classList.add(
+                "unlocked"
+              );
+              if (gameState.checkpointElements[nextCheckpointIndex]) {
                 setTimeout(() => {
-                  checkpointElements[nextCheckpointIndex].classList.add(
-                    "unlocked",
-                    "active"
-                  );
+                  gameState.checkpointElements[
+                    nextCheckpointIndex
+                  ].classList.add("unlocked", "active");
                 }, 400);
               }
             }, 200);
           } else {
             // This was the last checkpoint - start celebration!
             setTimeout(() => {
-              finalCongrats.classList.remove("hidden");
-              new CelebrationParticles(
-                document.getElementById("celebration-canvas")
-              );
+              const finalCongrats = document.getElementById("final-congrats");
+              if (finalCongrats) {
+                finalCongrats.classList.remove("hidden");
+                const celebrationCanvas =
+                  document.getElementById("celebration-canvas");
+                if (celebrationCanvas) {
+                  gameState.celebrationParticles = new CelebrationParticles(
+                    celebrationCanvas
+                  );
+                }
+              }
             }, 500);
           }
         } else {
@@ -855,111 +1259,163 @@
           answerInput.classList.add("border-red-500");
 
           // Add error particles
-          const rect = element.getBoundingClientRect();
-          const containerRect = document
-            .getElementById("particle-canvas")
-            .getBoundingClientRect();
-          particleSystem.addParticles(
-            rect.left + rect.width / 2 - containerRect.left,
-            rect.top + rect.height / 2 - containerRect.top,
-            "#FF0000",
-            8
-          );
-        }
-      }
-
-      // --- Build the mission dynamically ---
-      missionData.forEach((item, index) => {
-        const element = document.createElement("div");
-        if (item.type === "checkpoint") {
-          element.className = "checkpoint";
-          let promptHTML = item.prompt
-            ? `<p class="mb-4 text-purple-300">${item.prompt}</p>`
-            : "";
-
-          element.innerHTML = `
-                    <h3>${item.title}</h3>
-                    ${promptHTML}
-                    <div class="flex justify-center items-center gap-4 mb-4">
-                        <p class="text-3xl font-bold text-yellow-300">${item.question}</p>
-                        <input type="number" class="answer-input p-3 text-center" placeholder="؟">
-                    </div>
-                    <button class="check-btn">${item.button}</button>
-                    <div class="feedback-correct hidden mt-4 p-4 bg-green-900 bg-opacity-60 rounded-xl text-green-300 font-bold border border-green-500">
-                        <p>${item.feedback.correct}</p>
-                    </div>
-                    <div class="feedback-incorrect hidden mt-4 p-4 bg-red-900 bg-opacity-60 rounded-xl text-red-300 font-bold border border-red-500">
-                        <p>${item.feedback.incorrect}</p>
-                    </div>
-                `;
-
-          const checkBtn = element.querySelector(".check-btn");
-          const answerInput = element.querySelector(".answer-input");
-
-          checkBtn.addEventListener("click", () => checkAnswer(index));
-          answerInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") checkAnswer(index);
-          });
-
-          // Add hover effects for particles
-          element.addEventListener("mouseenter", () => {
-            if (element.classList.contains("active")) {
-              const rect = element.getBoundingClientRect();
-              const containerRect = document
-                .getElementById("particle-canvas")
-                .getBoundingClientRect();
-              particleSystem.addParticles(
-                rect.left + rect.width / 2 - containerRect.left,
-                rect.top + rect.height / 2 - containerRect.top,
-                "#A78BFA",
-                5
-              );
-            }
-          });
-        } else {
-          // It's a path
-          element.className = "path";
-          element.innerHTML = item.icon;
-        }
-        missionPathContainer.appendChild(element);
-        checkpointElements.push(element);
-      });
-
-      // --- Start the mission ---
-      if (checkpointElements[0]) {
-        checkpointElements[0].classList.add("unlocked", "active");
-      }
-
-      // Add resize handler for particle canvas
-      window.addEventListener("resize", () => {
-        particleSystem.resize();
-      });
-
-      // Add some ambient particles on load
-      setTimeout(() => {
-        for (let i = 0; i < 3; i++) {
-          setTimeout(() => {
-            particleSystem.addParticles(
-              Math.random() * particleSystem.canvas.width,
-              Math.random() * particleSystem.canvas.height,
-              "#A78BFA",
-              3
+          if (gameState.particleSystem) {
+            const rect = element.getBoundingClientRect();
+            const containerRect = document
+              .getElementById("particle-canvas")
+              .getBoundingClientRect();
+            gameState.particleSystem.addParticles(
+              rect.left + rect.width / 2 - containerRect.left,
+              rect.top + rect.height / 2 - containerRect.top,
+              "#FF0000",
+              8
             );
-          }, i * 1000);
+          }
         }
-      }, 2000);
+      }
 
-      // Add periodic ambient effects
-      setInterval(() => {
-        if (Math.random() < 0.3) {
-          particleSystem.addParticles(
-            Math.random() * particleSystem.canvas.width,
-            Math.random() * particleSystem.canvas.height,
-            Math.random() > 0.5 ? "#A78BFA" : "#FBBF24",
-            2
-          );
+      function setupCertificate() {
+        const getCertificateBtn = document.getElementById("get-certificate");
+        const downloadCertificateBtn = document.getElementById(
+          "download-certificate"
+        );
+        const restartMissionBtn = document.getElementById("restart-mission");
+
+        if (getCertificateBtn) {
+          getCertificateBtn.addEventListener("click", showCertificate);
         }
-      }, 3000);
+
+        if (downloadCertificateBtn) {
+          downloadCertificateBtn.addEventListener("click", downloadCertificate);
+        }
+
+        if (restartMissionBtn) {
+          restartMissionBtn.addEventListener("click", restartMission);
+        }
+      }
+
+      function showCertificate() {
+        const certificate = document.getElementById("certificate");
+        const certificateName = document.getElementById("certificate-name");
+        const certificateDate = document.getElementById("certificate-date");
+
+        if (certificate && certificateName && certificateDate) {
+          certificateName.textContent = gameState.playerName;
+          certificateDate.textContent = new Date().toLocaleDateString("ar-EG", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          certificate.classList.remove("hidden");
+          certificate.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      function downloadCertificate() {
+        // --- هذا هو العنصر الذي يحتوي على الشهادة ---
+        const certificateElement = document.getElementById("certificate");
+
+        // --- هذا هو زر التحميل نفسه ---
+        const downloadBtn = document.getElementById("download-certificate-btn");
+
+        // --- التأكد من وجود العناصر قبل استخدامها ---
+        if (!certificateElement || !downloadBtn) {
+          console.error("عنصر الشهادة أو زر التحميل غير موجود.");
+          return;
+        }
+
+        // إظهار رسالة للمستخدم بأن التحميل قيد الإعداد
+        downloadBtn.textContent = "يتم إعداد الشهادة...";
+        downloadBtn.disabled = true;
+
+        // استخدام html2canvas لالتقاط صورة للشهادة
+        html2canvas(certificateElement, {
+          backgroundColor: "#f8f9fa", // تحديد لون خلفية ثابت للصورة
+          scale: 2, // لزيادة جودة الصورة النهائية
+        })
+          .then((canvas) => {
+            // إنشاء رابط مؤقت للتحميل
+            const link = document.createElement("a");
+            link.download = `شهادة-${gameState.playerName || "البطل"}.png`; // اسم الملف
+            link.href = canvas.toDataURL("image/png");
+
+            // تفعيل التحميل
+            link.click();
+
+            // إعادة الزر إلى حالته الطبيعية بعد فترة قصيرة
+            setTimeout(() => {
+              downloadBtn.textContent = "تحميل الشهادة 📥";
+              downloadBtn.disabled = false;
+            }, 1000);
+          })
+          .catch((err) => {
+            // في حال حدوث خطأ أثناء التقاط الصورة
+            console.error("خطأ في html2canvas:", err);
+            downloadBtn.textContent = "حدث خطأ!";
+            // لا تعيد تفعيل الزر فوراً لإعطاء المستخدم فرصة لرؤية الخطأ
+          });
+      }
+
+      function restartMission() {
+        // Reset game state
+        gameState.checkpointsCompleted = 0;
+
+        // Destroy celebration particles
+        if (gameState.celebrationParticles) {
+          gameState.celebrationParticles.destroy();
+          gameState.celebrationParticles = null;
+        }
+
+        // Reset UI
+        const nameForm = document.getElementById("name-form");
+        const missionContent = document.getElementById("mission-content");
+        const certificate = document.getElementById("certificate");
+        const finalCongrats = document.getElementById("final-congrats");
+        const progressBar = document.getElementById("progress-bar");
+        const nameInput = document.getElementById("student-name");
+
+        if (nameForm) nameForm.classList.remove("hidden");
+        if (missionContent) missionContent.classList.add("hidden");
+        if (certificate) certificate.classList.add("hidden");
+        if (finalCongrats) finalCongrats.classList.add("hidden");
+        if (nameInput) nameInput.value = "";
+
+        if (progressBar) {
+          progressBar.style.width = "0%";
+          progressBar.textContent = "FUEL: 0%";
+        }
+
+        // Reset all checkpoints
+        gameState.checkpointElements.forEach((element) => {
+          element.classList.remove("unlocked", "active");
+
+          const answerInput = element.querySelector(".answer-input");
+          const checkBtn = element.querySelector(".check-btn");
+          const feedbackCorrect = element.querySelector(".feedback-correct");
+          const feedbackIncorrect = element.querySelector(
+            ".feedback-incorrect"
+          );
+
+          if (answerInput) {
+            answerInput.disabled = false;
+            answerInput.value = "";
+            answerInput.classList.remove("border-red-500", "border-green-400");
+          }
+
+          if (checkBtn) {
+            checkBtn.disabled = false;
+          }
+
+          if (feedbackCorrect) {
+            feedbackCorrect.classList.add("hidden");
+          }
+
+          if (feedbackIncorrect) {
+            feedbackIncorrect.classList.add("hidden");
+          }
+        });
+      }
     </script>
   </body>
 </html>
