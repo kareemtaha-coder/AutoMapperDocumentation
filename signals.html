@@ -423,6 +423,46 @@
             margin: 0 !important;
             border-radius: 0 0 0.5rem 0.5rem;
         }
+
+        /* Footer styling */
+        .footer {
+            background-color: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 140ch;
+            margin: 0 auto;
+        }
+
+        .developer-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--brand-red);
+        }
+
+        .reference {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body class="bg-bg-secondary">
@@ -859,252 +899,28 @@ welcomeMessage = computed(() => `Welcome, ${this.name()}!`);
     
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
 
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="developer-info">
+                <h3 class="text-xl font-semibold mb-2">تم تطوير هذا الموقع بواسطة</h3>
+                <p class="text-lg font-medium text-brand-red">Kareem Taha</p>
+            </div>
+            <div class="social-links">
+                <a href="https://www.facebook.com/kareem.taha.628786" target="_blank" rel="noopener noreferrer" title="Facebook">
+                    <i data-lucide="facebook"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/kareem-taha-31416634b/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                    <i data-lucide="linkedin"></i>
+                </a>
+            </div>
+            <div class="reference">
+                <p>المحتوى مستوحى من قناة <a href="https://www.youtube.com/watch?v=16hCJoSB6bE" target="_blank" rel="noopener noreferrer" class="text-brand-red hover:underline">Angular Egypt</a></p>
+            </div>
+        </div>
+    </footer>
     <script>
+        // Initialize Lucide icons
         lucide.createIcons();
-
-        // --- Sidebar Toggle ---
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-        const toggleSidebar = () => {
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('hidden');
-        };
-        sidebarToggle.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', () => { if (window.innerWidth < 768) { toggleSidebar(); } });
-        });
-
-        // --- Simplified Reactivity System for Demos ---
-        let activeEffect = null;
-        const signal = (initialValue, options) => {
-            let value = initialValue;
-            const subscribers = new Set();
-            const equalFn = options?.equal || ((a, b) => Object.is(a, b));
-            const s = () => {
-                if (activeEffect) activeEffect.dependencies.add(s);
-                return value;
-            };
-            s._isSignal = true;
-            s.set = (newValue) => {
-                if (!equalFn(value, newValue)) {
-                    value = newValue;
-                    new Set(subscribers).forEach(sub => sub());
-                }
-            };
-            s.update = (updateFn) => s.set(updateFn(value));
-            s.subscribe = (cb) => {
-                subscribers.add(cb);
-                return () => subscribers.delete(cb);
-            };
-            return s;
-        };
-        const effect = (effectFn) => {
-            const runner = () => {
-                if (runner.cleanups) runner.cleanups.forEach(c => c());
-                activeEffect = runner;
-                runner.dependencies.clear();
-                runner.cleanups.clear();
-                effectFn();
-                runner.dependencies.forEach(dep => {
-                    const unsub = dep.subscribe(runner);
-                    runner.cleanups.add(unsub);
-                });
-                activeEffect = null;
-            };
-            runner.dependencies = new Set();
-            runner.cleanups = new Set();
-            runner();
-        };
-        const computed = (computeFn) => {
-            let value;
-            const s = signal(undefined);
-            effect(() => {
-                value = computeFn();
-                s.set(value);
-            });
-            const getter = () => {
-                 if (activeEffect) activeEffect.dependencies.add(getter);
-                 return value;
-            }
-            getter.subscribe = s.subscribe;
-            return getter;
-        };
-        const logToTerminal = (terminalId, message, type = 'info') => {
-            const terminalBody = document.getElementById(terminalId);
-            if(!terminalBody) return;
-            const icon = type === 'computed' ? 'function-square' : type === 'effect' ? 'cpu' : 'chevron-right';
-            const colorClass = `log-${type}`;
-            terminalBody.innerHTML += `<p><i data-lucide="${icon}" class="w-4 h-4 ${colorClass}"></i> ${message}</p>`;
-            lucide.createIcons();
-            terminalBody.scrollTop = terminalBody.scrollHeight;
-        };
-
-        // --- Demo Implementations ---
-
-        // Demo 1: Updating Signals
-        const demoTitle = signal('عنوان ابتدائي');
-        const demoCounter = signal(0);
-        const demoUser = signal({ name: 'علي', loggedIn: true });
-        effect(() => {
-            document.getElementById('demo-title').textContent = demoTitle();
-            document.getElementById('demo-counter').textContent = demoCounter();
-            const user = demoUser();
-            document.getElementById('demo-user-status').textContent = `${user.name} - ${user.loggedIn ? 'مسجل دخوله' : 'غير مسجل'}`;
-        });
-        document.getElementById('btn-set-title').addEventListener('click', () => demoTitle.set('عنوان تم تغييره بـ set()!'));
-        document.getElementById('btn-update-counter').addEventListener('click', () => demoCounter.update(c => c + 1));
-        document.getElementById('btn-toggle-login').addEventListener('click', () => demoUser.update(u => ({...u, loggedIn: !u.loggedIn})));
-
-        // Demo 2: Computed
-        const computedCount = signal(1);
-        const computedDouble = computed(() => {
-            logToTerminal('computed-console', `[Computed] تم حساب double()`, 'computed');
-            return computedCount() * 2;
-        });
-        const computedIsEven = computed(() => computedCount() % 2 === 0);
-        effect(() => {
-            document.getElementById('computed-original').textContent = computedCount();
-            document.getElementById('computed-double').textContent = computedDouble();
-            document.getElementById('computed-iseven').textContent = computedIsEven() ? 'زوجي' : 'فردي';
-        });
-        logToTerminal('computed-console', `جرب تغيير العداد`, 'info');
-        document.getElementById('btn-computed-inc').addEventListener('click', () => computedCount.update(c => c + 1));
-        document.getElementById('btn-computed-dec').addEventListener('click', () => computedCount.update(c => c - 1));
-
-        // Demo 3: Effect
-        const effectUserId = signal(1);
-        const effectCounterVal = signal(0);
-        const untrackCheckbox = document.getElementById('untrack-checkbox');
-        effect(() => {
-             const useUntracked = untrackCheckbox.checked;
-             const userId = effectUserId(); // Always track user ID
-             let counterVal;
-             // Simplified untrack: only depend on effectCounterVal if checkbox is unchecked
-             if(!useUntracked) {
-                counterVal = effectCounterVal();
-             } else {
-                 // get value without creating dependency
-                counterVal = effectCounterVal();
-                const tempEffect = activeEffect;
-                activeEffect = null;
-                counterVal = effectCounterVal();
-                activeEffect = tempEffect;
-             }
-            logToTerminal('effect-console', `تم التنفيذ. ID المستخدم: ${userId}, العداد: ${counterVal}`, 'effect');
-        });
-        effect(() => {
-            document.getElementById('effect-userid').textContent = effectUserId();
-            document.getElementById('effect-counter').textContent = effectCounterVal();
-        });
-        logToTerminal('effect-console', `الـ Effect سيراقب "معرف المستخدم" دائماً.`, 'info');
-        document.getElementById('btn-effect-changeuser').addEventListener('click', () => effectUserId.update(id => id + 1));
-        document.getElementById('btn-effect-inccounter').addEventListener('click', () => effectCounterVal.update(c => c + 1));
-
-        // Demo 4: Equal Function
-        const equalName = signal('Mostafa', { equal: (a, b) => a.trim().toLowerCase() === b.trim().toLowerCase() });
-        const equalWelcomeMsg = computed(() => {
-            logToTerminal('equal-console', `[Computed] تم إعادة حساب الرسالة الترحيبية.`, 'computed');
-            return `مرحباً بك يا, ${equalName()}!`;
-        });
-        const equalInput = document.getElementById('equal-input');
-        equalInput.value = equalName();
-        effect(() => {
-             document.getElementById('equal-output').textContent = equalWelcomeMsg();
-        });
-        equalInput.addEventListener('input', (e) => equalName.set(e.target.value));
-        logToTerminal('equal-console', `جرب كتابة Mostafa ثم mostafa`, 'info');
-        
-        // Demo 5: State Management
-        const stateService = (() => {
-            const _state = signal({ user: 'زائر', theme: 'فاتح' });
-            return {
-                user: computed(() => _state().user),
-                theme: computed(() => _state().theme),
-                login: (name) => _state.update(s => ({...s, user: name})),
-                toggleTheme: () => _state.update(s => ({...s, theme: s.theme === 'فاتح' ? 'داكن' : 'فاتح'}))
-            };
-        })();
-        effect(() => {
-            const user = stateService.user();
-            const theme = stateService.theme();
-            document.getElementById('comp-a-user').textContent = user;
-            document.getElementById('comp-b-user').textContent = user;
-            document.getElementById('comp-a-theme').textContent = theme;
-            document.getElementById('comp-b-theme').textContent = theme;
-        });
-        document.getElementById('btn-comp-a-login').addEventListener('click', () => stateService.login('أحمد'));
-        document.getElementById('btn-comp-b-theme').addEventListener('click', () => stateService.toggleTheme());
-
-        // Demo 6: Data Fetching
-        const paginationSignal = signal({ page: 1, filter: 'all' });
-        effect(() => {
-            const { page, filter } = paginationSignal();
-            logToTerminal('fetch-console', `[Effect] استدعاء API بالمعلومات: { page: ${page}, filter: '${filter}' }`, 'effect');
-            const fetchResults = document.getElementById('fetch-results');
-            fetchResults.innerHTML = `<p class="flex items-center gap-2 text-text-secondary"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i>جاري التحميل...</p>`;
-            lucide.createIcons();
-            setTimeout(() => {
-                fetchResults.innerHTML = `
-                    <h5 class="font-bold text-text-primary">نتائج وهمية</h5>
-                    <ul class="list-disc pr-6 text-text-secondary">
-                        <li>- مستخدم ${page * 3 - 2} (فلتر: ${filter})</li>
-                        <li>- مستخدم ${page * 3 - 1} (فلتر: ${filter})</li>
-                        <li>- مستخدم ${page * 3} (فلتر: ${filter})</li>
-                    </ul>`;
-            }, 500);
-        });
-        effect(() => { document.getElementById('fetch-page-display').textContent = paginationSignal().page; });
-        document.getElementById('btn-fetch-next').addEventListener('click', () => paginationSignal.update(p => ({...p, page: p.page + 1})));
-        document.getElementById('btn-fetch-prev').addEventListener('click', () => paginationSignal.update(p => ({...p, page: Math.max(1, p.page - 1)})));
-        document.getElementById('fetch-filter').addEventListener('change', (e) => paginationSignal.update(p => ({...p, filter: e.target.value})));
-
-        // --- General Utilities: Copy Button & Accordion ---
-        document.querySelectorAll('.copy-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const pre = e.currentTarget.parentElement;
-                const code = pre.querySelector('code').innerText;
-                navigator.clipboard.writeText(code).then(() => {
-                    e.currentTarget.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-green-400"></i>';
-                    lucide.createIcons();
-                    setTimeout(() => {
-                        e.currentTarget.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>';
-                        lucide.createIcons();
-                    }, 2000);
-                });
-            });
-        });
-        
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const content = header.nextElementSibling;
-                const icon = header.querySelector('.accordion-icon');
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                    icon.style.transform = 'rotate(0deg)';
-                } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                    icon.style.transform = 'rotate(180deg)';
-                } 
-            });
-        });
-
-        // --- Sidebar Active Link ---
-        const sections = document.querySelectorAll('main section');
-        const navLinks = document.querySelectorAll('.sidebar-link');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    navLinks.forEach(link => {
-                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-                    });
-                }
-            });
-        }, { rootMargin: "-30% 0px -70% 0px" });
-        sections.forEach(section => observer.observe(section));
-
     </script>
 </body>
 </html>
