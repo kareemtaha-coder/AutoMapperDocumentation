@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بناء API احترافي: الدليل التفاعلي</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a; /* slate-900 */
+            --bg-light: #1e293b; /* slate-800 */
+            --border-color: #334155; /* slate-700 */
+            --text-main: #f1f5f9; /* slate-100 */
+            --text-muted: #94a3b8; /* slate-400 */
+            --accent-color: #38bdf8; /* sky-400 */
+            --accent-hover: #7dd3fc; /* sky-300 */
+            --code-bg: #020617; /* slate-950 */
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--accent-hover), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            font-weight: 700;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; /* slate-600 */
+        }
+
+        .code-block {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem; /* Adjusted for RTL */
+            background-color: var(--bg-light);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            opacity: 0.5;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+        
+        .copy-btn:hover {
+             background-color: var(--accent-color);
+             color: var(--bg-dark);
+        }
+
+        .flow-arrow {
+            position: relative;
+            color: var(--text-muted);
+        }
+        .flow-arrow::after {
+            content: '↓';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -20px;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="sticky top-0 h-screen w-64 bg-slate-900/70 backdrop-blur-lg border-l border-slate-800 p-6 hidden lg:block">
+            <h2 class="text-xl font-bold mb-8 gradient-text">قائمة المحتويات</h2>
+            <nav id="nav-menu" class="space-y-3">
+                <a href="#intro" class="nav-link block px-4 py-2 rounded-lg transition-colors hover:bg-slate-700">المقدمة والمفاهيم</a>
+                <a href="#step1" class="nav-link block px-4 py-2 rounded-lg transition-colors hover:bg-slate-700">الخطوة 1: هيكلة المشروع</a>
+                <a href="#step2" class="nav-link block px-4 py-2 rounded-lg transition-colors hover:bg-slate-700">الخطوة 2: الطبقة الأساسية (Core)</a>
+                <a href="#step3" class="nav-link block px-4 py-2 rounded-lg transition-colors hover:bg-slate-700">الخطوة 3: طبقة الـ API</a>
+                <a href="#step4" class="nav-link block px-4 py-2 rounded-lg transition-colors hover:bg-slate-700">الخطوة 4: التكوين والربط</a>
+                <a href="#step5" class="nav-link block px-4 py-2 rounded-lg transition-colors hover:bg-slate-700">الخطوة 5: وحدة التحكم</a>
+                <a href="#summary" class="nav-link block px-4 py-2 rounded-lg transition-colors hover:bg-slate-700">الملخص ومسار الطلب</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 sm:p-8 md:p-12">
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- Introduction Section -->
+                <section id="intro" class="mb-16">
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">بناء <span class="gradient-text">API</span> احترافي</h1>
+                    <p class="text-lg text-slate-400">دليلك التفاعلي لتطبيق أنماط التصميم: Generic Repository, Specification, و AutoMapper في ASP.NET Core.</p>
+                    
+                    <div class="grid md:grid-cols-3 gap-6 mt-12 text-center">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <h3 class="font-bold text-lg text-sky-400">Generic Repository</h3>
+                            <p class="text-sm text-slate-400 mt-2">لفصل منطق الوصول للبيانات ومنع تكرار الكود.</p>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <h3 class="font-bold text-lg text-sky-400">Specification</h3>
+                            <p class="text-sm text-slate-400 mt-2">لتغليف منطق الاستعلامات المعقدة في كائنات قابلة لإعادة الاستخدام.</p>
+                        </div>
+                         <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <h3 class="font-bold text-lg text-sky-400">AutoMapper</h3>
+                            <p class="text-sm text-slate-400 mt-2">لأتمتة تحويل البيانات بين الكيانات (Entities) وكائنات DTOs.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <hr class="border-slate-700 my-12">
+                
+                <!-- Step 1: Project Structure -->
+                <section id="step1" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4">الخطوة 1: هيكلة المشروع</h2>
+                    <p class="text-slate-400 mb-6">للحفاظ على البساطة، سنستخدم هيكلًا من مشروعين لفصل المسؤوليات بشكل واضح.</p>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6">
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-sky-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                <div>
+                                    <h4 class="font-bold">Examination.Core</h4>
+                                    <p class="text-slate-400 text-sm">مكتبة فئة (Class Library) تحتوي على الكيانات (Entities) والواجهات (Interfaces). هذه هي طبقة القلب.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-sky-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                                <div>
+                                    <h4 class="font-bold">Examination.API</h4>
+                                    <p class="text-slate-400 text-sm">مشروع ASP.NET Core Web API يحتوي على كل ما يتعلق بالويب: وحدات التحكم، DTOs، إعدادات الخدمات، وتطبيق المستودع.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <hr class="border-slate-700 my-12">
+
+                <!-- Step 2: Core Layer -->
+                <section id="step2" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4">الخطوة 2: بناء الطبقة الأساسية (Core)</h2>
+                    <p class="text-slate-400 mb-6">هذه الطبقة هي الأساس ولا تعتمد على أي طبقة أخرى. نبدأ بتعريف الكيانات (Entities).</p>
+                    <h3 class="text-xl font-semibold mb-3">الكيانات (Entities)</h3>
+                    <div class="code-block rounded-lg mb-6">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+// Entities/BaseModel.cs
+namespace Examination.Core.Entities
+{
+    public abstract class BaseModel
+    {
+        public int Id { get; set; }
+        public bool IsDeleted { get; set; } = false;
+    }
+}
+
+// Entities/Course.cs
+namespace Examination.Core.Entities
+{
+    public class Course : BaseModel
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public ICollection&lt;Exam&gt; Exams { get; set; } = new List&lt;Exam&gt;();
+    }
+}
+
+// Entities/Exam.cs
+namespace Examination.Core.Entities
+{
+    public class Exam : BaseModel
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public int CourseId { get; set; }
+        public Course Course { get; set; }
+    }
+}
+                        </code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mb-3 mt-8">الواجهات (Interfaces)</h3>
+                    <p class="text-slate-400 mb-4">نعرّف العقود (Contracts) للمستودع والمواصفات. هذا يسمح لنا بفصل التطبيق عن التفاصيل.</p>
+                     <div class="code-block rounded-lg">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+// Interfaces/IGenericRepository.cs
+public interface IGenericRepository<T> where T : BaseModel
+{
+    Task<T> GetByIdAsync(int id);
+    Task<IReadOnlyList<T>> ListAllAsync();
+    Task<T> AddAsync(T entity);
+    Task UpdateAsync(T entity);
+    Task DeleteAsync(T entity);
+    Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
+    Task<T> GetEntityWithSpec(ISpecification<T> spec);
+}
+
+// Interfaces/ISpecification.cs
+public interface ISpecification<T>
+{
+    Expression<Func<T, bool>> Criteria { get; }
+    List<Expression<Func<T, object>>> Includes { get; }
+}
+                        </code></pre>
+                    </div>
+                </section>
+                
+                <hr class="border-slate-700 my-12">
+
+                <!-- Step 3: API Layer -->
+                <section id="step3" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4">الخطوة 3: طبقة الـ API (التطبيق)</h2>
+                    <p class="text-slate-400 mb-6">هنا نقوم بتطبيق الواجهات التي عرفناها في الطبقة الأساسية.</p>
+
+                    <h3 class="text-xl font-semibold mb-3">تطبيق المستودع (GenericRepository)</h3>
+                    <p class="text-slate-400 mb-4">لاحظ كيف أن هذا الكلاس "غبي" ولا يحتوي على منطق استعلام مباشر. إنه فقط يطبق المواصفات التي تصله.</p>
+                     <div class="code-block rounded-lg mb-6">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+// Data/GenericRepository.cs
+public class GenericRepository&lt;T&gt; : IGenericRepository&lt;T&gt; where T : BaseModel
+{
+    private readonly ApplicationDbContext _context;
+
+    public GenericRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+    
+    public async Task&lt;IReadOnlyList&lt;T&gt;&gt; ListAsync(ISpecification&lt;T&gt; spec)
+    {
+        return await ApplySpecification(spec).ToListAsync();
+    }
+
+    private IQueryable&lt;T&gt; ApplySpecification(ISpecification&lt;T&gt; spec)
+    {
+        return SpecificationEvaluator&lt;T&gt;.GetQuery(_context.Set&lt;T&gt;().AsQueryable(), spec);
+    }
+
+    // ... Other standard methods: GetByIdAsync, AddAsync, etc.
+}
+                        </code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mb-3 mt-8">مُقيّم المواصفات (SpecificationEvaluator)</h3>
+                    <p class="text-slate-400 mb-4">العقل المدبر الذي يترجم كائن المواصفة إلى استعلام LINQ حقيقي.</p>
+                    <div class="code-block rounded-lg mb-6">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+// Specifications/SpecificationEvaluator.cs
+public class SpecificationEvaluator&lt;T&gt; where T : BaseModel
+{
+    public static IQueryable&lt;T&gt; GetQuery(IQueryable&lt;T&gt; inputQuery, ISpecification&lt;T&gt; spec)
+    {
+        var query = inputQuery;
+
+        if (spec.Criteria != null)
+        {
+            query = query.Where(spec.Criteria);
+        }
+
+        query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
+
+        return query;
+    }
+}
+                        </code></pre>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-8">مثال على مواصفة محددة</h3>
+                    <p class="text-slate-400 mb-4">هكذا ننشئ استعلامًا محددًا لإحضار دورة مع امتحاناتها. يمكن إعادة استخدامه في أي مكان.</p>
+                    <div class="code-block rounded-lg mb-6">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+// Specifications/CourseWithExamsSpecification.cs
+public class CourseWithExamsSpecification : BaseSpecification&lt;Course&gt;
+{
+    public CourseWithExamsSpecification(int courseId) : base(c => c.Id == courseId)
+    {
+        AddInclude(c => c.Exams);
+    }
+}
+                        </code></pre>
+                    </div>
+                </section>
+
+                <hr class="border-slate-700 my-12">
+                
+                <!-- Step 4: Configuration -->
+                <section id="step4" class="mb-12">
+                     <h2 class="text-3xl font-bold mb-4">الخطوة 4: التكوين والربط</h2>
+                     <p class="text-slate-400 mb-6">نربط كل شيء معًا في ملف `Program.cs` باستخدام حقن التبعية (Dependency Injection) ونقوم بإعداد AutoMapper.</p>
+                    
+                    <h3 class="text-xl font-semibold mb-3">إعداد AutoMapper</h3>
+                     <div class="code-block rounded-lg mb-6">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+// Helpers/MappingProfiles.cs
+public class MappingProfiles : Profile
+{
+    public MappingProfiles()
+    {
+        CreateMap&lt;Course, CourseDto&gt;();
+        CreateMap&lt;Exam, ExamDto&gt;();
+        CreateMap&lt;CourseToCreateDto, Course&gt;();
+    }
+}
+                        </code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mb-3 mt-8">تسجيل الخدمات</h3>
+                     <div class="code-block rounded-lg">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+// Program.cs
+var builder = WebApplication.CreateBuilder(args);
+
+// 1. Configure DbContext
+builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+// 2. Configure Generic Repository
+builder.Services.AddScoped(typeof(IGenericRepository&lt;&gt;), typeof(GenericRepository&lt;&gt;));
+
+// 3. Configure AutoMapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+// ... other services
+
+var app = builder.Build();
+
+// ...
+app.Run();
+                        </code></pre>
+                    </div>
+                </section>
+                
+                <hr class="border-slate-700 my-12">
+                
+                <!-- Step 5: Controller -->
+                <section id="step5" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4">الخطوة 5: وحدة التحكم (Controller)</h2>
+                    <p class="text-slate-400 mb-6">أخيرًا، وحدة التحكم التي تستخدم كل ما سبق لخدمة الطلبات. لاحظ كيف أنها نظيفة وواضحة.</p>
+                     <div class="code-block rounded-lg">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <pre class="bg-slate-950 p-4 rounded-lg overflow-x-auto"><code class="language-csharp text-sm">
+[ApiController]
+[Route("api/[controller]")]
+public class CoursesController : ControllerBase
+{
+    private readonly IGenericRepository&lt;Course&gt; _courseRepo;
+    private readonly IMapper _mapper;
+
+    public CoursesController(IGenericRepository&lt;Course&gt; courseRepo, IMapper mapper)
+    {
+        _courseRepo = courseRepo;
+        _mapper = mapper;
+    }
+
+    [HttpGet("{id}")]
+    public async Task&lt;ActionResult&lt;CourseDto&gt;&gt; GetCourse(int id)
+    {
+        // 1. Create the specification
+        var spec = new CourseWithExamsSpecification(id);
+
+        // 2. Use the repository to get data with the spec
+        var course = await _courseRepo.GetEntityWithSpec(spec);
+
+        if (course == null) return NotFound();
+        
+        // 3. Map the result to a DTO and return
+        var courseDto = _mapper.Map&lt;Course, CourseDto&gt;(course);
+        return Ok(courseDto);
+    }
+
+    // ... Other endpoints like GetCourses() and CreateCourse()
+}
+                        </code></pre>
+                    </div>
+                </section>
+                
+                <hr class="border-slate-700 my-12">
+
+                <!-- Summary Flowchart -->
+                <section id="summary" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4 text-center">الملخص: مسار الطلب في الـ API</h2>
+                    <p class="text-slate-400 mb-10 text-center">هكذا يتدفق الطلب عبر الطبقات المختلفة التي بنيناها.</p>
+
+                    <div class="space-y-8 flex flex-col items-center">
+                        <div class="w-full md:w-3/4 bg-slate-800 p-4 rounded-lg text-center border border-slate-700 shadow-lg flow-arrow">
+                            <span class="text-sm font-semibold text-sky-400 block mb-1">العميل (Client)</span>
+                            <p class="font-mono text-sm">GET /api/courses/1</p>
+                        </div>
+                         <div class="w-full md:w-3/4 bg-slate-800 p-4 rounded-lg text-center border border-slate-700 shadow-lg flow-arrow">
+                            <span class="text-sm font-semibold text-sky-400 block mb-1">وحدة التحكم (Controller)</span>
+                            <p class="font-mono text-sm">تستقبل الطلب وتنشئ المواصفة (Specification)</p>
+                        </div>
+                         <div class="w-full md:w-3/4 bg-slate-800 p-4 rounded-lg text-center border border-slate-700 shadow-lg flow-arrow">
+                             <span class="text-sm font-semibold text-sky-400 block mb-1">المستودع (Repository)</span>
+                             <p class="font-mono text-sm">يستلم المواصفة ويطبقها على DbContext</p>
+                        </div>
+                         <div class="w-full md:w-3/4 bg-slate-800 p-4 rounded-lg text-center border border-slate-700 shadow-lg flow-arrow">
+                            <span class="text-sm font-semibold text-sky-400 block mb-1">قاعدة البيانات (Database)</span>
+                            <p class="font-mono text-sm">تنفذ الاستعلام وتعيد البيانات (Entities)</p>
+                        </div>
+                        <div class="w-full md:w-3/4 bg-slate-800 p-4 rounded-lg text-center border border-slate-700 shadow-lg flow-arrow">
+                            <span class="text-sm font-semibold text-sky-400 block mb-1">العودة لوحدة التحكم</span>
+                            <p class="font-mono text-sm">تستخدم AutoMapper لتحويل Entity إلى DTO</p>
+                        </div>
+                        <div class="w-full md:w-3/4 bg-emerald-900/50 p-4 rounded-lg text-center border border-emerald-500 shadow-lg">
+                            <span class="text-sm font-semibold text-emerald-400 block mb-1">الاستجابة (Response)</span>
+                            <p class="font-mono text-sm">200 OK + بيانات الـ DTO بصيغة JSON</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function copyCode(button) {
+            const pre = button.parentElement.querySelector('pre');
+            const code = pre.querySelector('code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                button.innerText = 'تم النسخ!';
+                setTimeout(() => {
+                    button.innerText = 'نسخ';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, {
+            threshold: 0.5 
+        });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
