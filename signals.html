@@ -498,12 +498,12 @@
                 <a href="#encapsulation" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="lock" class="w-4 h-4"></i>نمط تغليف الحالة</a>
                 <a href="#equal-function" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="scale" class="w-4 h-4"></i>التحكم في المقارنة (`equal`)</a>
 
-                <h3 class="font-bold mt-4 mb-2 px-3 text-sm text-text-secondary uppercase tracking-wider">أنماط عملية</h3>
-                <a href="#state-management" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="share-2" class="w-4 h-4"></i>إدارة الحالة العامة</a>
-                <a href="#data-fetching" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="database" class="w-4 h-4"></i>جلب البيانات الديناميكي</a>
+                <h3 class="font-bold mt-4 mb-2 px-3 text-sm text-text-secondary uppercase tracking-wider">Practical Patterns</h3>
+                <a href="#state-management" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="share-2" class="w-4 h-4"></i>State Management</a>
+                <a href="#data-fetching" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="database" class="w-4 h-4"></i>Dynamic Data Fetching</a>
 
-                <h3 class="font-bold mt-4 mb-2 px-3 text-sm text-text-secondary uppercase tracking-wider">أسئلة شائعة</h3>
-                <a href="#faq" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="help-circle" class="w-4 h-4"></i>أسئلة وإجابات</a>
+                <h3 class="font-bold mt-4 mb-2 px-3 text-sm text-text-secondary uppercase tracking-wider">FAQ</h3>
+                <a href="#faq" class="sidebar-link p-3 rounded-md flex items-center gap-3"><i data-lucide="help-circle" class="w-4 h-4"></i>Questions & Answers</a>
             </nav>
         </aside>
 
@@ -511,7 +511,7 @@
         <main class="w-full p-6 md:p-12 prose">
             
             <section id="intro">
-                <h2>مقدمة: ما هي السيجنالز؟</h2>
+                <h2>Introduction: What are Signals?</h2>
                 <p>
                     قبل أن نتعمق في الكود، دعنا نبسط الفكرة الأساسية. تخيل أن كل قطعة بيانات متغيرة في تطبيقك هي "صندوق" ذكي. هذا الصندوق لا يحمل القيمة فقط، بل يمتلك أيضاً "جهاز إرسال" و"جهاز استقبال"، وهو التشبيه الرائع الذي تم استخدامه في الورشة.
                 </p>
@@ -532,33 +532,33 @@
                     </div>
                 </div>
                  <p class="mt-8">
-                   هذه هي قوة الـ **"Reactivity"** أو **"التفاعلية"** التي تقدمها السيجنالز: نظام فعال ودقيق لمعرفة <strong>ماذا تغير</strong> و <strong>أين يجب أن يتم التحديث</strong>، وذلك بأقل مجهود ممكن وبأداء عالٍ جداً.
+                   هذه هي قوة الـ **"Reactivity"** أو **"التفاعلية"** التي تقدمها signals: نظام فعال ودقيق لمعرفة <strong>ماذا تغير</strong> و <strong>أين يجب أن يتم التحديث</strong>، وذلك بأقل مجهود ممكن وبأداء عالٍ جداً.
                 </p>
             </section>
 
             <hr class="my-12 border-border-color">
 
             <section id="creating-signals">
-                <h2>1.1 إنشاء سيجنال (`signal`)</h2>
-                <p>لإنشاء سيجنال، نستخدم دالة `signal()` التي يتم استيرادها من `@angular/core`. نمرر القيمة الأولية كوسيط لهذه الدالة.</p>
+                <h2>1.1 Creating a Signal</h2>
+                <p>لإنشاء signal، نستخدم دالة `signal()` التي يتم استيرادها من `@angular/core`. نمرر القيمة الأولية كوسيط لهذه الدالة.</p>
                 <pre><button class="copy-btn"><i data-lucide="copy" class="w-4 h-4"></i></button><code>import { Component, signal } from '@angular/core';
 
 @Component({ /* ... */ })
 export class AppComponent {
-  // إنشاء سيجنال من نوع string
-  pageTitle = signal&lt;string&gt;('مرحباً بالسيجنالز!');
+  // إنشاء signal من نوع string
+  pageTitle = signal&lt;string&gt;('مرحباً بالـ signals!');
 
-  // إنشاء سيجنال من نوع number (سيتم استنتاج النوع)
+  // إنشاء signal من نوع number (سيتم استنتاج النوع)
   userCount = signal(50);
 
-  // إنشاء سيجنال يحتوي على object
+  // إنشاء signal يحتوي على object
   user = signal({ name: 'علي', loggedIn: true });
 }</code></pre>
                 <div class="callout callout-info">
                     <i data-lucide="lightbulb" class="w-5 h-5 text-brand-blue flex-shrink-0 mt-1"></i>
                     <div>
-                        <h4 class="font-bold text-lg m-0 mb-1 text-text-primary">ملاحظة</h4>
-                        <p>أنجلولار ذكي بما يكفي لاستنتاج النوع (Type Inference) في معظم الحالات، لكن من الممارسة الجيدة تحديد النوع بشكل صريح (`<string>`)، خاصة مع الكائنات المعقدة لضمان سلامة الأنواع (Type Safety).</p>
+                        <h4 class="font-bold text-lg m-0 mb-1 text-text-primary">Note</h4>
+                        <p>Angular ذكي بما يكفي لاستنتاج النوع (Type Inference) في معظم الحالات، لكن من الممارسة الجيدة تحديد النوع بشكل صريح (`<string>`)، خاصة مع الـ objects المعقدة لضمان سلامة الأنواع (Type Safety).</p>
                     </div>
                 </div>
             </section>
@@ -566,8 +566,8 @@ export class AppComponent {
              <hr class="my-12 border-border-color">
 
             <section id="reading-signals">
-                <h2>1.2 قراءة السيجنال</h2>
-                <p>لقراءة القيمة المخزنة داخل سيجنال، نتعامل مع السيجنال كأنها دالة ونستدعيها باستخدام الأقواس `()`. هذا ينطبق سواء في كود TypeScript أو في قوالب HTML.</p>
+                <h2>1.2 Reading a Signal</h2>
+                <p>لقراءة القيمة المخزنة داخل signal، نتعامل مع الـ signal كأنه function ونستدعيه باستخدام الأقواس `()`. هذا ينطبق سواء في كود TypeScript أو في قوالب HTML.</p>
                 <pre><button class="copy-btn"><i data-lucide="copy" class="w-4 h-4"></i></button><code>// في الكلاس
 logTitle() {
   // لقراءة القيمة، نستخدم pageTitle()
@@ -583,8 +583,8 @@ logTitle() {
              <hr class="my-12 border-border-color">
 
              <section id="updating-signals">
-                <h2>1.3 تحديث السيجنال (`set` & `update`)</h2>
-                <p>هناك طريقتان رئيسيتان لتحديث السيجنال، واختيار الطريقة المناسبة يعتمد على طبيعة التحديث الذي تريد القيام به.</p>
+                <h2>1.3 Updating a Signal (`set` & `update`)</h2>
+                <p>هناك طريقتان رئيسيتان لتحديث signal، واختيار الطريقة المناسبة يعتمد على طبيعة التحديث الذي تريد القيام به.</p>
                 <h3 class="mt-8">1. `set()`: الاستبدال الكامل</h3>
                 <p>تستخدم `set()` لاستبدال القيمة القديمة بالكامل بقيمة جديدة. هي مناسبة للقيم الأولية (Primitives) أو عندما تريد تغيير الكائن بأكمله.</p>
                 <pre><button class="copy-btn"><i data-lucide="copy" class="w-4 h-4"></i></button><code>updateTitle() {
@@ -607,7 +607,7 @@ logoutUser() {
 }</code></pre>
 
                 <div class="interactive-card not-prose">
-                    <div class="interactive-card__header"><h4>تجربة حية: تحديث السيجنالز</h4></div>
+                    <div class="interactive-card__header"><h4>Live Demo: Updating Signals</h4></div>
                     <div class="interactive-card__body space-y-6">
                         <div class="p-4 border border-border-color rounded-lg">
                             <p><strong>العنوان (باستخدام `set`):</strong> <span id="demo-title" class="font-bold text-brand-blue"></span></p>
@@ -628,10 +628,10 @@ logoutUser() {
             <hr class="my-12 border-border-color">
             
             <section id="computed-signals">
-                 <h2>2. الحالة المشتقة (`computed`)</h2>
-                 <p>الـ `computed` سيجنال هي سيجنال **للقراءة فقط**، تُشتق قيمتها من سيجنال واحد أو أكثر. يتم إعادة حساب قيمتها تلقائياً فقط عند تغير أي من السيجنالز التي تعتمد عليها.</p>
+                 <h2>2. Computed Signals</h2>
+                 <p>الـ `computed signal` هو signal **للقراءة فقط**، تُشتق قيمته من signal واحد أو أكثر. يتم إعادة حساب قيمته تلقائياً فقط عند تغير أي من الـ signals التي يعتمد عليها.</p>
                 <div class="interactive-card not-prose">
-                    <div class="interactive-card__header"><h4>تجربة حية: `computed`</h4></div>
+                    <div class="interactive-card__header"><h4>Live Demo: `computed`</h4></div>
                     <div class="interactive-card__body interactive-card__body--grid">
                         <div class="space-y-4">
                             <div>
@@ -667,17 +667,17 @@ logoutUser() {
              <hr class="my-12 border-border-color">
             
             <section id="effects">
-                 <h2>3. الآثار الجانبية (`effect`)</h2>
-                 <p>الـ `effect` هي عملية يتم تنفيذها كلما تغيرت قيمة أي سيجنال مستخدم بداخلها. هي مخصصة للآثار الجانبية (Side Effects) التي لا علاقة لها مباشرةً برسم الواجهة.</p>
+                 <h2>3. Side Effects (`effect`)</h2>
+                 <p>الـ `effect` هي عملية يتم تنفيذها كلما تغيرت قيمة أي signal مستخدم بداخلها. هي مخصصة للآثار الجانبية (Side Effects) التي لا علاقة لها مباشرةً برسم الواجهة.</p>
                   <div class="callout callout-warning">
                     <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500 flex-shrink-0 mt-1"></i>
                     <div>
-                        <h4 class="font-bold text-lg m-0 mb-1 text-text-primary">تحذير</h4>
-                        <p>لا تقم بتعديل أي سيجنال داخل `effect` إلا بحذر شديد، فقد يؤدي ذلك إلى حلقة لا نهائية (infinite loop). الـ `effect` يجب أن يكون نقطة نهاية التفاعل، وليس بداية تفاعل جديد.</p>
+                        <h4 class="font-bold text-lg m-0 mb-1 text-text-primary">Warning</h4>
+                        <p>لا تقم بتعديل أي signal داخل `effect` إلا بحذر شديد، فقد يؤدي ذلك إلى حلقة لا نهائية (infinite loop). الـ `effect` يجب أن يكون نقطة نهاية التفاعل، وليس بداية تفاعل جديد.</p>
                     </div>
                 </div>
                  <div class="interactive-card not-prose">
-                    <div class="interactive-card__header"><h4>تجربة حية: `effect`</h4></div>
+                    <div class="interactive-card__header"><h4>Live Demo: `effect`</h4></div>
                     <div class="interactive-card__body interactive-card__body--grid">
                         <div class="space-y-4">
                             <div>
