@@ -24,6 +24,7 @@
             --border-color: #e2e8f0;
             --success-color: #10b981;
             --error-color: #ef4444;
+            --score-color: #f59e0b;
         }
 
         * {
@@ -46,19 +47,44 @@
         .lab-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
             overflow: hidden;
+        }
+        
+        /* --- Score Board --- */
+        .score-board {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(45deg, var(--primary-purple), var(--primary-pink));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+        .score-board.updated {
+            transform: scale(1.1);
+        }
+        .score-board .icon {
+            font-size: 1.5rem;
         }
 
         /* --- Header --- */
         .lab-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin: 4rem 0;
             animation: slideInDown 0.8s ease-out;
         }
 
         .lab-header h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: clamp(2.5rem, 8vw, 4rem);
             font-weight: 900;
             background: linear-gradient(90deg, var(--primary-purple), var(--primary-pink));
             -webkit-background-clip: text;
@@ -67,7 +93,7 @@
         }
 
         .lab-header p {
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 4vw, 1.25rem);
             color: var(--text-light);
             max-width: 600px;
             margin: auto;
@@ -77,7 +103,7 @@
         .lab-section {
             background: #ffffff;
             border-radius: 20px;
-            padding: 2rem;
+            padding: clamp(1rem, 5vw, 2rem);
             margin-bottom: 3rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
@@ -92,7 +118,7 @@
         }
 
         .section-title {
-            font-size: 2.25rem;
+            font-size: clamp(1.8rem, 6vw, 2.25rem);
             font-weight: 800;
             color: var(--text-dark);
             margin-bottom: 1.5rem;
@@ -102,7 +128,7 @@
         }
         
         .section-title .icon {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 7vw, 2.5rem);
         }
 
         /* --- Part 1: Ingredient Analysis --- */
@@ -209,7 +235,7 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 2rem;
+            gap: 1rem;
         }
         .beaker {
             width: 100px;
@@ -240,7 +266,7 @@
             font-weight: 900;
         }
         .mixing-operator {
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 900;
             align-self: center;
             color: var(--text-dark);
@@ -263,37 +289,46 @@
         /* --- Part 3: Recipe Sorting --- */
         .sorting-container {
             display: flex;
-            justify-content: space-around;
+            flex-direction: column;
+            align-items: center;
             gap: 2rem;
-            min-height: 400px;
         }
         .recipe-shelf, .sorted-shelf {
-            width: 45%;
+            width: 100%;
+            min-height: 120px;
             background: #f1f5f9;
             border-radius: 15px;
             padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
         }
         .shelf-title {
+            width: 100%;
             font-size: 1.5rem;
             font-weight: 700;
             padding-bottom: 1rem;
             border-bottom: 2px solid var(--border-color);
             margin-bottom: 1rem;
+            text-align: center;
         }
         .recipe-card {
             background-color: #fff;
             padding: 1rem;
             border-radius: 10px;
-            margin-bottom: 1rem;
             font-size: 1.5rem;
             font-weight: 700;
             text-align: center;
             cursor: grab;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             border-left: 5px solid var(--color, var(--primary-pink));
+            touch-action: none; /* Important for touch drag-and-drop */
         }
         .recipe-card.is-dragging {
             opacity: 0.5;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
         .sorted-shelf.drag-over {
             outline: 3px dashed var(--primary-pink);
@@ -330,6 +365,40 @@
             transform: scale(1.05);
         }
         
+        /* --- Celebration Effects --- */
+        #celebration-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .balloon {
+            width: 70px;
+            height: 90px;
+            border-radius: 50%;
+            background-color: var(--color);
+            position: absolute;
+            bottom: -100px;
+            opacity: 0.7;
+            animation: rise 8s ease-in forwards;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid var(--color);
+        }
+        @keyframes rise {
+            to {
+                transform: translateY(-120vh);
+            }
+        }
+        
         /* --- Animations --- */
         @keyframes slideInDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
@@ -347,6 +416,9 @@
     <!-- =======================================================================
     // HTML Content
     // ======================================================================= -->
+    <div id="celebration-container"></div>
+    <div class="score-board"><span class="icon">⭐</span><span id="score-value">0</span></div>
+
     <div class="lab-container">
         <header class="lab-header">
             <h1>مختبر الألوان السحري</h1>
@@ -356,7 +428,7 @@
         <main id="lab-main">
             <!-- Part 1: Ingredient Analysis (Place Value) -->
             <section id="part1" class="lab-section">
-                <h2 class="section-title"><span class="icon">🔬</span> التجربة الأولى: تحليل المكونات</h2>
+                <h2 class="section-title"><span class="icon">🔬</span>Experiment 1: Ingredient Analysis</h2>
                 <div class="ingredient-grid">
                     <div class="ingredient-card">
                         <div class="flask">
@@ -365,8 +437,8 @@
                             <div class="flask-neck"></div>
                         </div>
                         <div class="analysis-content">
-                            <div class="analysis-question">قيمة الرقم <strong>8</strong> في العدد 85</div>
-                            <input class="analysis-input" type="number" data-action="analyze-ingredient" data-answer="80">
+                            <div class="analysis-question">Value of <strong>8</strong> in 85</div>
+                            <input class="analysis-input" type="number" data-action="analyze-ingredient" data-answer="80" data-points="10">
                         </div>
                     </div>
                     <div class="ingredient-card">
@@ -376,8 +448,8 @@
                             <div class="flask-neck"></div>
                         </div>
                         <div class="analysis-content">
-                            <div class="analysis-question">قيمة الرقم <strong>2</strong> في العدد 42</div>
-                            <input class="analysis-input" type="number" data-action="analyze-ingredient" data-answer="2">
+                            <div class="analysis-question">Value of <strong>2</strong> in 42</div>
+                            <input class="analysis-input" type="number" data-action="analyze-ingredient" data-answer="2" data-points="10">
                         </div>
                     </div>
                 </div>
@@ -385,7 +457,7 @@
 
             <!-- Part 2: Potion Mixing (Addition) -->
             <section id="part2" class="lab-section">
-                <h2 class="section-title"><span class="icon">⚗️</span> التجربة الثانية: مزج الجرعات</h2>
+                <h2 class="section-title"><span class="icon">⚗️</span>Experiment 2: Potion Mixing</h2>
                 <div class="potion-station">
                     <div class="mixing-bench">
                         <div class="beaker" style="--color: #f59e0b; --fill: 56%;">
@@ -396,7 +468,7 @@
                             <div class="beaker-label">33</div>
                         </div>
                         <div class="mixing-operator">=</div>
-                        <input class="mixing-answer" type="number" data-action="mix-potion" data-answer="89" data-colors="#f59e0b,#84cc16" data-target-beaker-id="result-beaker-1">
+                        <input class="mixing-answer" type="number" data-action="mix-potion" data-answer="89" data-points="15" data-colors="#f59e0b,#84cc16" data-target-beaker-id="result-beaker-1">
                     </div>
                      <div class="result-beaker beaker" id="result-beaker-1"></div>
                 </div>
@@ -404,14 +476,14 @@
 
             <!-- Part 3: Recipe Sorting (Ordering) -->
             <section id="part3" class="lab-section">
-                 <h2 class="section-title"><span class="icon">📜</span> التجربة الثالثة: ترتيب الوصفة</h2>
+                 <h2 class="section-title"><span class="icon">📜</span>Experiment 3: Recipe Sorting</h2>
                  <div class="sorting-container">
                     <div class="recipe-shelf" id="recipe-source">
-                        <div class="shelf-title">وصفات غير مرتبة</div>
+                        <div class="shelf-title">Unsorted Recipes</div>
                         <!-- Recipe cards will be generated here by JS -->
                     </div>
                     <div class="sorted-shelf" id="sorted-recipes">
-                         <div class="shelf-title">رتب الوصفات هنا (من الأصغر للأكبر)</div>
+                         <div class="shelf-title">Sort Here (Smallest to Largest)</div>
                     </div>
                  </div>
             </section>
@@ -419,9 +491,9 @@
             <!-- Final Result Screen -->
             <section id="final-result" class="lab-section" style="display: none;">
                 <div class="final-result">
-                    <h2>🎉 تجربة ناجحة! 🎉</h2>
-                    <p>لقد أتقنت كل التجارب وأعددت الجرعة السحرية. أنت عالم رائع!</p>
-                    <button class="restart-btn" data-action="restart-lab">إجراء تجربة جديدة</button>
+                    <h2>🎉 Experiment Successful! 🎉</h2>
+                    <p>You mastered all the experiments and created the magic potion. You are a brilliant scientist!</p>
+                    <button class="restart-btn" data-action="restart-lab">Start a New Experiment</button>
                 </div>
             </section>
 
@@ -433,14 +505,26 @@
     // ======================================================================= -->
     <script>
         (function() {
-            // --- Tone.js Sound Synthesis ---
+            // --- Tone.js Sound Synthesis (Re-usable instances) ---
             const synth = new Tone.Synth().toDestination();
+            const popSynth = new Tone.MembraneSynth().toDestination();
+            const celebrationSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+            celebrationSynth.volume.value = -8;
+            
             const successSound = () => { if (Tone.context.state === 'running') synth.triggerAttackRelease("C5", "8n", Tone.now()); };
             const errorSound = () => { if (Tone.context.state === 'running') synth.triggerAttackRelease("C3", "8n", Tone.now()); };
-            const popSound = () => { if (Tone.context.state === 'running') new Tone.MembraneSynth().toDestination().triggerAttackRelease("C2", "8n"); };
+            const popSound = () => { if (Tone.context.state === 'running') popSynth.triggerAttackRelease("C2", "8n"); };
+            const celebrationSound = () => {
+                if (Tone.context.state === 'running') {
+                    const now = Tone.now();
+                    celebrationSynth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "8n", now);
+                    celebrationSynth.triggerAttackRelease(["E4", "G4", "B4"], "8n", now + 0.2);
+                }
+            };
 
             // --- State Management ---
             const gameState = {
+                score: 0,
                 ingredientsAnalyzed: 0,
                 potionsMixed: 0,
                 recipesSorted: false,
@@ -468,7 +552,8 @@
 
             // --- DOM Element References ---
             const mainContainer = document.getElementById('lab-main');
-            if (!mainContainer) return;
+            const scoreValueEl = document.getElementById('score-value');
+            if (!mainContainer || !scoreValueEl) return;
             
             // --- Initialization ---
             function initializeLab() {
@@ -488,7 +573,7 @@
 
             function populateRecipeShelf() {
                 const recipeSource = document.getElementById('recipe-source');
-                recipeSource.innerHTML = '<div class="shelf-title">وصفات غير مرتبة</div>';
+                recipeSource.innerHTML = '<div class="shelf-title">Unsorted Recipes</div>';
                 recipesToSort.sort(() => Math.random() - 0.5).forEach(recipe => {
                     const card = document.createElement('div');
                     card.className = 'recipe-card';
@@ -504,45 +589,27 @@
             // --- Event Delegation ---
             const debouncedCheckInput = debounce(checkInput, 300);
             
-            mainContainer.addEventListener('pointerdown', () => {
+            function startAudioContext() {
                 if (!audioStarted) {
                     Tone.start();
                     audioStarted = true;
                 }
+            }
+
+            mainContainer.addEventListener('pointerdown', (e) => {
+                startAudioContext();
+                if (e.target.matches('.recipe-card')) {
+                    handleDragStart(e);
+                }
             });
-            
+
             mainContainer.addEventListener('input', (e) => {
+                startAudioContext();
                 if (e.target.matches('[data-action="analyze-ingredient"], [data-action="mix-potion"]')) {
                     debouncedCheckInput(e.target);
                 }
             });
 
-            mainContainer.addEventListener('dragstart', (e) => {
-                if (e.target.classList.contains('recipe-card')) {
-                    draggedRecipe = e.target;
-                    setTimeout(() => e.target.classList.add('is-dragging'), 0);
-                }
-            });
-            mainContainer.addEventListener('dragend', (e) => {
-                if(draggedRecipe) draggedRecipe.classList.remove('is-dragging');
-                draggedRecipe = null;
-            });
-            mainContainer.addEventListener('dragover', (e) => e.preventDefault());
-            mainContainer.addEventListener('dragleave', (e) => e.target.closest('.sorted-shelf')?.classList.remove('drag-over'));
-            mainContainer.addEventListener('dragenter', (e) => {
-                e.preventDefault();
-                e.target.closest('.sorted-shelf')?.classList.add('drag-over');
-            });
-            mainContainer.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const dropZone = e.target.closest('.sorted-shelf');
-                if (dropZone && draggedRecipe) {
-                    dropZone.appendChild(draggedRecipe);
-                    dropZone.classList.remove('drag-over');
-                    popSound();
-                    checkRecipeSort();
-                }
-            });
             mainContainer.addEventListener('click', (e) => {
                 if(e.target.matches('[data-action="restart-lab"]')) restartLab();
             });
@@ -560,6 +627,7 @@
                     input.classList.add('correct');
                     input.disabled = true;
                     successSound();
+                    updateScore(parseInt(input.dataset.points, 10));
 
                     if(input.dataset.action === 'analyze-ingredient') {
                          gameState.ingredientsAnalyzed++;
@@ -570,7 +638,6 @@
                         const colors = input.dataset.colors.split(',');
                         beaker.style.background = `linear-gradient(to right, ${colors[0]}, ${colors[1]})`;
                     }
-                    
                     checkOverallProgress();
                 } else {
                     input.classList.add('incorrect');
@@ -578,7 +645,33 @@
                 }
             }
 
-            // --- Recipe Sorting Logic ---
+            // --- Drag & Drop Logic (with Touch Support) ---
+            function handleDragStart(e) {
+                draggedRecipe = e.target;
+                draggedRecipe.classList.add('is-dragging');
+            }
+            
+            mainContainer.addEventListener('dragend', (e) => {
+                if(draggedRecipe) draggedRecipe.classList.remove('is-dragging');
+                draggedRecipe = null;
+            });
+            mainContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const dropZone = e.target.closest('.sorted-shelf');
+                if (dropZone) dropZone.classList.add('drag-over');
+            });
+            mainContainer.addEventListener('dragleave', (e) => e.target.closest('.sorted-shelf')?.classList.remove('drag-over'));
+            mainContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const dropZone = e.target.closest('.sorted-shelf');
+                if (dropZone && draggedRecipe) {
+                    dropZone.appendChild(draggedRecipe);
+                    dropZone.classList.remove('drag-over');
+                    popSound();
+                    checkRecipeSort();
+                }
+            });
+            
             function checkRecipeSort() {
                 const sortedShelf = document.getElementById('sorted-recipes');
                 const cards = Array.from(sortedShelf.querySelectorAll('.recipe-card'));
@@ -591,6 +684,7 @@
                     if (!gameState.recipesSorted) {
                         gameState.recipesSorted = true;
                         successSound();
+                        updateScore(25);
                         checkOverallProgress();
                     }
                 } else {
@@ -598,7 +692,14 @@
                 }
             }
             
-            // --- Game Completion and Restart Logic ---
+            // --- Game State & Score ---
+            function updateScore(points) {
+                gameState.score += points;
+                scoreValueEl.textContent = gameState.score;
+                scoreValueEl.parentElement.classList.add('updated');
+                setTimeout(() => scoreValueEl.parentElement.classList.remove('updated'), 300);
+            }
+            
             function checkOverallProgress() {
                 if (gameState.ingredientsAnalyzed === gameState.totalIngredients &&
                     gameState.potionsMixed === gameState.totalPotions &&
@@ -606,15 +707,32 @@
                     
                     setTimeout(() => {
                         document.getElementById('final-result').style.display = 'block';
-                        successSound();
+                        triggerCelebration();
                     }, 500);
                 }
             }
             
+            function triggerCelebration() {
+                celebrationSound();
+                const balloonColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#7c3aed', '#ec4899'];
+                for (let i = 0; i < 15; i++) {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'balloon';
+                    balloon.style.setProperty('--color', balloonColors[i % balloonColors.length]);
+                    balloon.style.left = `${Math.random() * 100}vw`;
+                    balloon.style.animationDelay = `${Math.random() * 2}s`;
+                    document.getElementById('celebration-container').appendChild(balloon);
+                    setTimeout(() => balloon.remove(), 8000);
+                }
+            }
+
             function restartLab() {
+                 gameState.score = 0;
                  gameState.ingredientsAnalyzed = 0;
                  gameState.potionsMixed = 0;
                  gameState.recipesSorted = false;
+                 updateScore(0);
+                 scoreValueEl.textContent = '0'; // Reset score display
 
                  document.querySelectorAll('.analysis-input, .mixing-answer').forEach(input => {
                      input.value = '';
@@ -629,7 +747,6 @@
                  document.getElementById('final-result').style.display = 'none';
             }
             
-            // --- Start the Lab ---
             initializeLab();
         })();
     </script>
