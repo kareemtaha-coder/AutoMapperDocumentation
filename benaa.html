@@ -1,937 +1,637 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>مغامرة القيم والأخلاق للأطفال</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Changa:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مختبر الألوان السحري</title>
+    <!-- Google Fonts for a friendly Arabic UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Tone.js for sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
-      :root {
-        --primary-color: #4a90e2;
-        --secondary-color: #f5a623;
-        --correct-color: #7ed321;
-        --incorrect-color: #d0021b;
-        --card-bg-color: rgba(255, 255, 255, 0.95);
-        --magic-purple: #8b5cf6;
-        --happy-pink: #ec4899;
-      }
-
-      body {
-        font-family: "Changa", sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0;
-        overflow-x: hidden;
-      }
-
-      .stars-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        background: radial-gradient(
-            circle at 20% 30%,
-            rgba(255, 255, 255, 0.1) 1px,
-            transparent 1px
-          ),
-          radial-gradient(
-            circle at 80% 70%,
-            rgba(255, 255, 255, 0.15) 1px,
-            transparent 1px
-          ),
-          radial-gradient(
-            circle at 40% 80%,
-            rgba(255, 255, 255, 0.1) 1px,
-            transparent 1px
-          );
-        background-size: 200px 200px, 300px 300px, 150px 150px;
-        animation: twinkle 10s linear infinite;
-      }
-
-      @keyframes twinkle {
-        0%,
-        100% {
-          opacity: 0.3;
+        /* =======================================================================
+        // CSS Content
+        // ======================================================================= */
+        :root {
+            --bg-color: #f8f7ff;
+            --primary-purple: #7c3aed;
+            --primary-pink: #ec4899;
+            --primary-blue: #3b82f6;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --error-color: #ef4444;
         }
-        50% {
-          opacity: 1;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-      }
 
-      @keyframes bounce {
-        0%,
-        20%,
-        50%,
-        80%,
-        100% {
-          transform: translateY(0);
+        html {
+            scroll-behavior: smooth;
         }
-        40% {
-          transform: translateY(-20px);
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
         }
-        60% {
-          transform: translateY(-10px);
+
+        .lab-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            overflow: hidden;
         }
-      }
 
-      @keyframes pulse-glow {
-        0% {
-          box-shadow: 0 0 5px var(--secondary-color);
+        /* --- Header --- */
+        .lab-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: slideInDown 0.8s ease-out;
         }
-        50% {
-          box-shadow: 0 0 20px var(--secondary-color),
-            0 0 30px var(--secondary-color);
+
+        .lab-header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--primary-purple), var(--primary-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
-        100% {
-          box-shadow: 0 0 5px var(--secondary-color);
+
+        .lab-header p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: auto;
         }
-      }
 
-      .page-container {
-        background-color: var(--card-bg-color);
-        backdrop-filter: blur(10px);
-        border-radius: 24px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        width: 100%;
-        max-width: 900px;
-        margin: 2rem auto;
-        overflow: hidden;
-        border: 4px solid white;
-        border-top: 12px solid var(--secondary-color);
-        position: relative;
-        z-index: 1;
-      }
-
-      .main-header {
-        padding: 1.5rem;
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--magic-purple)
-        );
-        color: white;
-        text-align: center;
-      }
-      .institute-logo {
-        font-weight: 700;
-        background: linear-gradient(45deg, white, #f0f0f0);
-        color: var(--primary-color);
-        padding: 0.8rem 1.5rem;
-        border-radius: 20px;
-        font-size: 1.4rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      .intro-header {
-        background: linear-gradient(
-          45deg,
-          var(--primary-color),
-          var(--magic-purple)
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-align: center;
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        animation: bounce 2s infinite;
-      }
-
-      .action-button {
-        background: linear-gradient(
-          45deg,
-          var(--primary-color),
-          var(--magic-purple)
-        );
-        color: white;
-        font-weight: 700;
-        padding: 1.2rem 3rem;
-        border-radius: 50px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 6px 0 #357abd;
-        font-size: 1.3rem;
-      }
-      .action-button:hover {
-        transform: translateY(-3px);
-        animation: pulse-glow 2s infinite;
-      }
-      .action-button:active {
-        transform: translateY(3px);
-        box-shadow: 0 2px 0 #357abd;
-      }
-
-      .secondary-button {
-        background: linear-gradient(45deg, #90a4ae, #607d8b);
-        box-shadow: 0 6px 0 #455a64;
-      }
-      .secondary-button:active {
-        box-shadow: 0 2px 0 #455a64;
-      }
-
-      .quiz-option {
-        display: block;
-        width: 100%;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        text-align: right;
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border: 3px solid #dee2e6;
-        border-radius: 20px;
-        cursor: pointer;
-        font-size: 1.3rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-      }
-      .quiz-option:hover {
-        border-color: var(--secondary-color);
-        transform: scale(1.03) rotate(1deg);
-      }
-      .quiz-option.selected {
-        border-color: var(--primary-color);
-        background: linear-gradient(135deg, #ebf5ff, #d1ecff);
-        color: var(--primary-color);
-        font-weight: 700;
-      }
-      .quiz-option.correct {
-        background: linear-gradient(135deg, #f1fbef, #e8f5e8);
-        border-color: var(--correct-color);
-        color: #4caf50;
-        animation: bounce 0.6s ease;
-      }
-      .quiz-option.incorrect {
-        background: linear-gradient(135deg, #ffeeee, #ffe0e0);
-        border-color: var(--incorrect-color);
-        color: #d0021b;
-      }
-
-      .star-icon {
-        width: 24px;
-        height: 24px;
-        fill: var(--secondary-color);
-        display: inline-block;
-        margin: 0 2px;
-      }
-      #stars-container .star-icon {
-        width: 50px;
-        height: 50px;
-        animation: bounce 1s infinite;
-      }
-
-      .lesson-paragraph {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-        font-size: 1.3rem;
-        line-height: 1.8;
-        color: #444;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.5);
-        border-radius: 15px;
-        border-right: 4px solid var(--primary-color);
-      }
-      .lesson-icon {
-        flex-shrink: 0;
-        width: 50px;
-        height: 50px;
-        margin-top: 0.5rem;
-        color: var(--primary-color);
-      }
-
-      .progress-bar {
-        width: 100%;
-        height: 20px;
-        background: #e0e0e0;
-        border-radius: 10px;
-        overflow: hidden;
-        margin: 1rem 0;
-      }
-      .progress-fill {
-        height: 100%;
-        background: linear-gradient(
-          45deg,
-          var(--correct-color),
-          var(--secondary-color)
-        );
-        transition: width 0.5s ease;
-        border-radius: 10px;
-      }
-
-      .hearts-container {
-        display: flex;
-        justify-content: center;
-        gap: 0.5rem;
-        margin: 1rem 0;
-      }
-      .heart {
-        font-size: 2rem;
-        color: #ff6b6b;
-        animation: heartbeat 1.5s infinite;
-      }
-      .heart.lost {
-        opacity: 0.3;
-        animation: none;
-      }
-      @keyframes heartbeat {
-        0%,
-        100% {
-          transform: scale(1);
+        /* --- Section Styling --- */
+        .lab-section {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-        50% {
-          transform: scale(1.1);
+
+        .lab-section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
-      }
 
-      .achievement-badge {
-        background: linear-gradient(45deg, gold, orange);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        font-weight: bold;
-        margin: 0.25rem;
-        display: inline-block;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        animation: bounce 2s infinite;
-      }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-title .icon {
+            font-size: 2.5rem;
+        }
 
-      .mini-game-container {
-        background: linear-gradient(135deg, #ff9a9e, #fecfef);
-        border-radius: 20px;
-        padding: 2rem;
-        margin: 1rem 0;
-        text-align: center;
-      }
-      .drawing-tool {
-        background: white;
-        border: 2px solid var(--primary-color);
-        border-radius: 10px;
-        padding: 0.5rem 1rem;
-        margin: 0.25rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      .drawing-tool:hover,
-      .drawing-tool.active {
-        background: var(--primary-color);
-        color: white;
-        transform: scale(1.1);
-      }
+        /* --- Part 1: Ingredient Analysis --- */
+        .ingredient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
 
-      .memory-card {
-        width: 80px;
-        height: 80px;
-        border-radius: 15px;
-        cursor: pointer;
-        transition: transform 0.3s;
-        margin: 0.5rem;
-        perspective: 1000px;
-      }
-      .memory-card .card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        transition: transform 0.6s;
-        transform-style: preserve-3d;
-      }
-      .memory-card.flipped .card-inner {
-        transform: rotateY(180deg);
-      }
-      .card-face {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 15px;
-      }
-      .card-front {
-        background: linear-gradient(
-          45deg,
-          var(--primary-color),
-          var(--magic-purple)
-        );
-      }
-      .card-back {
-        background: white;
-        color: var(--primary-color);
-        border: 3px solid var(--primary-color);
-        transform: rotateY(180deg);
-        font-size: 2.5rem;
-        font-weight: bold;
-      }
-      .memory-card.matched .card-inner {
-        transform: scale(1.1);
-        box-shadow: 0 0 20px var(--correct-color);
-      }
-      .memory-card.matched .card-front {
-        background: var(--correct-color);
-      }
+        .ingredient-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .flask {
+            width: 80px;
+            height: 100px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .flask-liquid {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            right: 5px;
+            height: 50%;
+            background: linear-gradient(to top, var(--primary-blue), #60a5fa);
+            border-radius: 0 0 30px 30px;
+            transition: height 0.5s ease;
+        }
+        .flask-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 80px;
+            border: 4px solid var(--text-dark);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .flask-neck {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            width: 30px;
+            height: 30px;
+            border: 4px solid var(--text-dark);
+            border-bottom: none;
+        }
+        
+        .ingredient-card.correct .flask-liquid {
+            height: 80%;
+            background: linear-gradient(to top, var(--success-color), #34d399);
+            animation: bubble 1s infinite;
+        }
+        
+        .analysis-question {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .analysis-question strong {
+            font-size: 2rem;
+            color: var(--primary-purple);
+        }
+        .analysis-input {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        .analysis-input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+        .analysis-input.correct {
+            border-color: var(--success-color);
+            background-color: #f0fdf4;
+        }
+        .analysis-input.incorrect {
+            border-color: var(--error-color);
+            background-color: #fef2f2;
+            animation: shake 0.5s;
+        }
+        
+        /* --- Part 2: Potion Mixing --- */
+        .potion-station {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        .mixing-bench {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+        .beaker {
+            width: 100px;
+            height: 120px;
+            border: 5px solid var(--text-dark);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            position: relative;
+            background: linear-gradient(to top, var(--color, #e0e0e0) 0%, var(--color, #e0e0e0) var(--fill, 0%), transparent var(--fill, 0%), transparent 100%);
+            transition: background 0.5s ease;
+        }
+        .beaker::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            height: 10px;
+            background: var(--text-dark);
+            border-radius: 5px;
+        }
+        .beaker-label {
+            position: absolute;
+            bottom: -35px;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+        .mixing-operator {
+            font-size: 4rem;
+            font-weight: 900;
+            align-self: center;
+            color: var(--text-dark);
+        }
+        .result-beaker {
+            width: 150px;
+            height: 180px;
+        }
+        .mixing-answer {
+            width: 150px;
+            height: 100px;
+            font-size: 4rem;
+            text-align: center;
+            border: 3px dashed var(--border-color);
+            border-radius: 10px;
+            font-weight: 900;
+            color: var(--text-dark);
+        }
+        
+        /* --- Part 3: Recipe Sorting --- */
+        .sorting-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 2rem;
+            min-height: 400px;
+        }
+        .recipe-shelf, .sorted-shelf {
+            width: 45%;
+            background: #f1f5f9;
+            border-radius: 15px;
+            padding: 1rem;
+        }
+        .shelf-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+        .recipe-card {
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: grab;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--color, var(--primary-pink));
+        }
+        .recipe-card.is-dragging {
+            opacity: 0.5;
+        }
+        .sorted-shelf.drag-over {
+            outline: 3px dashed var(--primary-pink);
+            outline-offset: -5px;
+        }
+
+        /* --- Final Result --- */
+        .final-result {
+            text-align: center;
+            padding: 3rem;
+        }
+        .final-result h2 {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--success-color);
+            animation: bounceIn 1s;
+        }
+        .final-result p {
+            font-size: 1.5rem;
+        }
+        .restart-btn {
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            background: var(--primary-purple);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .restart-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* --- Animations --- */
+        @keyframes slideInDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes bounceIn { 0%, 20%, 40%, 60%, 80%, 100% { transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); } 0% { opacity: 0; transform: scale3d(.3, .3, .3); } 20% { transform: scale3d(1.1, 1.1, 1.1); } 40% { transform: scale3d(.9, .9, .9); } 60% { opacity: 1; transform: scale3d(1.03, 1.03, 1.03); } 80% { transform: scale3d(.97, .97, .97); } 100% { opacity: 1; transform: scale3d(1, 1, 1); } }
+        @keyframes bubble {
+            0% { border-radius: 0 0 30px 30px; }
+            50% { border-radius: 0 0 10px 10px; transform: scale(1.02); }
+            100% { border-radius: 0 0 30px 30px; }
+        }
+
     </style>
-  </head>
-  <body>
-    <div class="stars-bg"></div>
+</head>
+<body>
 
-    <div class="page-container">
-      <header class="main-header">
-        <div>
-          <div class="institute-logo">
-            <span>أكاديمية بنــــاء</span>
-            <svg class="star-icon" viewBox="0 0 24 24">
-              <path
-                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-              />
-            </svg>
-          </div>
-          <h2 class="text-3xl font-bold mt-4">مغامرة الأخلاق السحرية</h2>
-        </div>
-      </header>
+    <!-- =======================================================================
+    // HTML Content
+    // ======================================================================= -->
+    <div class="lab-container">
+        <header class="lab-header">
+            <h1>مختبر الألوان السحري</h1>
+            <p>مرحبًا بك أيها العالم الصغير! مهمتك اليوم هي إجراء ثلاث تجارب ناجحة لإعداد الجرعة السحرية النهائية.</p>
+        </header>
 
-      <main class="p-6 md:p-10">
-        <!-- Introduction Section -->
-        <div id="introduction-section">
-          <div class="text-center mb-6">
-            <h1 class="intro-header">مرحباً بك في عالم الأخلاق السحري! ✨</h1>
-          </div>
-          <div class="text-content space-y-4">
-            <div class="lesson-paragraph">
-              <svg
-                class="lesson-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              <p>
-                مرحباً أيها البطل الصغير! 🌟 هل تعلم أن الأخلاق الحسنة هي مثل
-                السحر؟ إنها تجعلك محبوباً من الجميع وتنير قلبك بالسعادة!
-              </p>
-            </div>
-            <div class="lesson-paragraph">
-              <svg
-                class="lesson-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <p>
-                نبينا الكريم محمد صلى الله عليه وسلم جاء ليعلمنا كيف نكون
-                أطفالاً رائعين بأخلاق جميلة. كان يحب الأطفال ويعاملهم بلطف
-                ومحبة! 💕
-              </p>
-            </div>
-          </div>
-          <div class="text-center mt-10 space-y-4">
-            <div class="hearts-container">
-              <span class="heart">💖</span><span class="heart">💖</span
-              ><span class="heart">💖</span>
-            </div>
-            <button id="start-adventure-btn" class="action-button">
-              🌟 لنبدأ المغامرة! 🌟
-            </button>
-          </div>
-        </div>
+        <main id="lab-main">
+            <!-- Part 1: Ingredient Analysis (Place Value) -->
+            <section id="part1" class="lab-section">
+                <h2 class="section-title"><span class="icon">🔬</span> التجربة الأولى: تحليل المكونات</h2>
+                <div class="ingredient-grid">
+                    <div class="ingredient-card">
+                        <div class="flask">
+                            <div class="flask-liquid" style="--color: #3b82f6;"></div>
+                            <div class="flask-body"></div>
+                            <div class="flask-neck"></div>
+                        </div>
+                        <div class="analysis-content">
+                            <div class="analysis-question">قيمة الرقم <strong>8</strong> في العدد 85</div>
+                            <input class="analysis-input" type="number" data-action="analyze-ingredient" data-answer="80">
+                        </div>
+                    </div>
+                    <div class="ingredient-card">
+                        <div class="flask">
+                            <div class="flask-liquid" style="--color: #ec4899;"></div>
+                            <div class="flask-body"></div>
+                            <div class="flask-neck"></div>
+                        </div>
+                        <div class="analysis-content">
+                            <div class="analysis-question">قيمة الرقم <strong>2</strong> في العدد 42</div>
+                            <input class="analysis-input" type="number" data-action="analyze-ingredient" data-answer="2">
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        <!-- Game Mode Selection -->
-        <div id="game-mode-section" class="hidden text-center">
-          <h2 class="intro-header">اختر طريقة اللعب! 🎯</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            <div class="mini-game-container">
-              <h3 class="text-2xl font-bold mb-4">🧠 اختبار المعرفة</h3>
-              <p class="mb-4">أجب على الأسئلة واكسب النجوم!</p>
-              <button id="quiz-mode-btn" class="action-button">
-                ابدأ الاختبار
-              </button>
-            </div>
-            <div class="mini-game-container">
-              <h3 class="text-2xl font-bold mb-4">🎨 ألعاب تفاعلية</h3>
-              <p class="mb-4">العب ألعاباً ممتعة وتعلم القيم!</p>
-              <button id="games-mode-btn" class="action-button">
-                العب الآن
-              </button>
-            </div>
-          </div>
-          <div class="text-center mt-6">
-            <button
-              id="back-to-intro-btn"
-              class="action-button secondary-button"
-            >
-              🏠 العودة للمقدمة
-            </button>
-          </div>
-        </div>
+            <!-- Part 2: Potion Mixing (Addition) -->
+            <section id="part2" class="lab-section">
+                <h2 class="section-title"><span class="icon">⚗️</span> التجربة الثانية: مزج الجرعات</h2>
+                <div class="potion-station">
+                    <div class="mixing-bench">
+                        <div class="beaker" style="--color: #f59e0b; --fill: 56%;">
+                            <div class="beaker-label">56</div>
+                        </div>
+                        <div class="mixing-operator">+</div>
+                        <div class="beaker" style="--color: #84cc16; --fill: 33%;">
+                            <div class="beaker-label">33</div>
+                        </div>
+                        <div class="mixing-operator">=</div>
+                        <input class="mixing-answer" type="number" data-action="mix-potion" data-answer="89" data-colors="#f59e0b,#84cc16" data-target-beaker-id="result-beaker-1">
+                    </div>
+                     <div class="result-beaker beaker" id="result-beaker-1"></div>
+                </div>
+            </section>
 
-        <!-- Quiz Section -->
-        <div id="quiz-section" class="hidden">
-          <div class="text-center mb-8">
-            <h2 class="intro-header">وقت الأسئلة المثيرة! 🎯</h2>
-            <div class="progress-bar">
-              <div
-                id="progress-fill"
-                class="progress-fill"
-                style="width: 0%"
-              ></div>
-            </div>
-            <p id="question-counter" class="text-lg font-bold mt-2"></p>
-          </div>
-          <div id="quiz-question-container" class="mb-6"></div>
-          <div
-            class="flex justify-center items-center space-x-4 space-x-reverse"
-          >
-            <button id="submit-answer-btn" class="action-button">
-              ✅ تأكيد إجابتي</button
-            ><button id="next-question-btn" class="hidden action-button">
-              ➡️ السؤال التالي
-            </button>
-          </div>
-          <div
-            id="feedback-message"
-            class="text-center mt-6 font-bold text-2xl h-16"
-          ></div>
-          <div class="text-center mt-4">
-            <div id="lives-container" class="hearts-container"></div>
-          </div>
-        </div>
+            <!-- Part 3: Recipe Sorting (Ordering) -->
+            <section id="part3" class="lab-section">
+                 <h2 class="section-title"><span class="icon">📜</span> التجربة الثالثة: ترتيب الوصفة</h2>
+                 <div class="sorting-container">
+                    <div class="recipe-shelf" id="recipe-source">
+                        <div class="shelf-title">وصفات غير مرتبة</div>
+                        <!-- Recipe cards will be generated here by JS -->
+                    </div>
+                    <div class="sorted-shelf" id="sorted-recipes">
+                         <div class="shelf-title">رتب الوصفات هنا (من الأصغر للأكبر)</div>
+                    </div>
+                 </div>
+            </section>
 
-        <!-- Games Section -->
-        <div id="games-section" class="hidden">
-          <div class="text-center mb-8">
-            <h2 class="intro-header">الألعاب التعليمية! 🎮</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="mini-game-container">
-              <h3 class="text-xl font-bold mb-4">🎨 ارسم القيم</h3>
-              <canvas
-                id="drawing-canvas"
-                width="300"
-                height="200"
-                class="bg-white rounded-lg shadow-inner cursor-crosshair"
-              ></canvas>
-              <div class="mt-4">
-                <button class="drawing-tool active" data-color="#4A90E2">
-                  أزرق</button
-                ><button class="drawing-tool" data-color="#F5A623">
-                  برتقالي</button
-                ><button class="drawing-tool" data-color="#7ED321">أخضر</button
-                ><button class="drawing-tool" data-color="#D0021B">أحمر</button
-                ><button id="clear-drawing-btn" class="drawing-tool">
-                  مسح
-                </button>
-              </div>
-            </div>
-            <div class="mini-game-container">
-              <h3 class="text-xl font-bold mb-4">🧩 لعبة الذاكرة</h3>
-              <div
-                id="memory-game"
-                class="grid grid-cols-4 gap-2 justify-center"
-              ></div>
-              <button id="start-memory-btn" class="action-button mt-4">
-                ابدأ اللعبة
-              </button>
-            </div>
-          </div>
-          <div class="text-center mt-6">
-            <button
-              id="back-to-modes-btn"
-              class="action-button secondary-button"
-            >
-              🔙 العودة للألعاب
-            </button>
-          </div>
-        </div>
+            <!-- Final Result Screen -->
+            <section id="final-result" class="lab-section" style="display: none;">
+                <div class="final-result">
+                    <h2>🎉 تجربة ناجحة! 🎉</h2>
+                    <p>لقد أتقنت كل التجارب وأعددت الجرعة السحرية. أنت عالم رائع!</p>
+                    <button class="restart-btn" data-action="restart-lab">إجراء تجربة جديدة</button>
+                </div>
+            </section>
 
-        <!-- Results Section -->
-        <div id="results-section" class="hidden text-center p-8">
-          <div class="text-center mb-6">
-            <h2 id="results-header" class="intro-header"></h2>
-          </div>
-          <div id="stars-container" class="mb-6 flex justify-center"></div>
-          <p
-            id="score-text"
-            class="text-3xl font-bold mb-4"
-            style="color: #444"
-          ></p>
-          <div id="achievements-container" class="mb-6"></div>
-          <div
-            class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 sm:space-x-reverse mt-6"
-          >
-            <button id="retry-btn" class="action-button">
-              🔄 ألعب مرة أخرى</button
-            ><button id="main-menu-btn" class="action-button secondary-button">
-              🏠 العودة للقائمة
-            </button>
-          </div>
-        </div>
-      </main>
+        </main>
     </div>
 
+    <!-- =======================================================================
+    // JavaScript Content
+    // ======================================================================= -->
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- Get All UI Elements ---
-        const pageSections = {
-          intro: document.getElementById("introduction-section"),
-          modes: document.getElementById("game-mode-section"),
-          quiz: document.getElementById("quiz-section"),
-          games: document.getElementById("games-section"),
-          results: document.getElementById("results-section"),
-        };
-        const startAdventureBtn = document.getElementById(
-          "start-adventure-btn"
-        );
-        const quizModeBtn = document.getElementById("quiz-mode-btn");
-        const gamesModeBtn = document.getElementById("games-mode-btn");
-        const submitAnswerBtn = document.getElementById("submit-answer-btn");
-        const nextQuestionBtn = document.getElementById("next-question-btn");
-        const retryBtn = document.getElementById("retry-btn");
+        (function() {
+            // --- Tone.js Sound Synthesis ---
+            const synth = new Tone.Synth().toDestination();
+            const successSound = () => { if (Tone.context.state === 'running') synth.triggerAttackRelease("C5", "8n", Tone.now()); };
+            const errorSound = () => { if (Tone.context.state === 'running') synth.triggerAttackRelease("C3", "8n", Tone.now()); };
+            const popSound = () => { if (Tone.context.state === 'running') new Tone.MembraneSynth().toDestination().triggerAttackRelease("C2", "8n"); };
 
-        document
-          .getElementById("back-to-intro-btn")
-          .addEventListener("click", () => switchSection("intro"));
-        document
-          .getElementById("back-to-modes-btn")
-          .addEventListener("click", () => switchSection("modes"));
-        document
-          .getElementById("main-menu-btn")
-          .addEventListener("click", () => switchSection("modes"));
+            // --- State Management ---
+            const gameState = {
+                ingredientsAnalyzed: 0,
+                potionsMixed: 0,
+                recipesSorted: false,
+                totalIngredients: 2,
+                totalPotions: 1,
+                totalRecipes: 5
+            };
 
-        const quizQuestionContainer = document.getElementById(
-          "quiz-question-container"
-        );
-        const feedbackMessage = document.getElementById("feedback-message");
-        const livesContainer = document.getElementById("lives-container");
-        const progressFill = document.getElementById("progress-fill");
-        const questionCounter = document.getElementById("question-counter");
-        const resultsHeader = document.getElementById("results-header");
-        const scoreText = document.getElementById("score-text");
-        const starsContainer = document.getElementById("stars-container");
-        const achievementsContainer = document.getElementById(
-          "achievements-container"
-        );
+            const recipesToSort = [
+                { id: 1, value: 31, color: '#ef4444' }, { id: 2, value: 83, color: '#f97316' },
+                { id: 3, value: 64, color: '#eab308' }, { id: 4, value: 29, color: '#22c55e' },
+                { id: 5, value: 59, color: '#3b82f6' }
+            ];
 
-        const drawingCanvas = document.getElementById("drawing-canvas");
-        const drawingTools = document.querySelectorAll(".drawing-tool");
-        const clearDrawingBtn = document.getElementById("clear-drawing-btn");
-        const memoryGameContainer = document.getElementById("memory-game");
-        const startMemoryBtn = document.getElementById("start-memory-btn");
+            let draggedRecipe = null;
+            let audioStarted = false;
+            let debounceTimer;
 
-        let lives = 3;
-        let score = 0;
-        let currentQuestionIndex = 0;
-        let lastQuizContext = "quiz";
+            function debounce(func, delay) {
+                return function(...args) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => func.apply(this, args), delay);
+                };
+            }
 
-        const quizData = [
-          {
-            question: "ما هو الشيء الجميل الذي هو روح ديننا الحنيف؟",
-            options: ["اللعب", "الأخلاق الحسنة", "النوم"],
-            correct: "الأخلاق الحسنة",
-          },
-          {
-            question: "لماذا أرسل الله نبينا محمد صلى الله عليه وسلم؟",
-            options: [
-              "ليعلمنا التجارة",
-              "لإتمام مكارم الأخلاق",
-              "لبناء البيوت",
-            ],
-            correct: "لإتمام مكارم الأخلاق",
-          },
-          {
-            question: "كيف نتعامل مع والدينا؟",
-            options: ["بالعصيان", "بالبر والإحسان", "بالإهمال"],
-            correct: "بالبر والإحسان",
-          },
-          {
-            question: "إذا وجدتَ شيئًا ليس لك، ماذا تفعل؟",
-            options: ["آخذه لي", "أبحث عن صاحبه لأعيده", "أتركه في مكانه"],
-            correct: "أبحث عن صاحبه لأعيده",
-          },
-          {
-            question: "ماذا نقول قبل أن نبدأ الأكل؟",
-            options: ["شكرًا", "بسم الله", "انتهيت"],
-            correct: "بسم الله",
-          },
-          {
-            question: "أن تكون صادقًا يعني...",
-            options: [
-              "أن تقول الحقيقة دائمًا",
-              "أن تكذب أحيانًا",
-              "أن لا تتكلم",
-            ],
-            correct: "أن تقول الحقيقة دائمًا",
-          },
-        ];
-        const memoryEmojis = ["💖", "🌟", "😊", "🙏", "🤝", "🎁"];
+            // --- DOM Element References ---
+            const mainContainer = document.getElementById('lab-main');
+            if (!mainContainer) return;
+            
+            // --- Initialization ---
+            function initializeLab() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                document.querySelectorAll('.lab-section').forEach(section => observer.observe(section));
+                
+                populateRecipeShelf();
+            }
 
-        function switchSection(sectionName) {
-          Object.values(pageSections).forEach((sec) =>
-            sec.classList.add("hidden")
-          );
-          if (pageSections[sectionName]) {
-            pageSections[sectionName].classList.remove("hidden");
-          }
-        }
+            function populateRecipeShelf() {
+                const recipeSource = document.getElementById('recipe-source');
+                recipeSource.innerHTML = '<div class="shelf-title">وصفات غير مرتبة</div>';
+                recipesToSort.sort(() => Math.random() - 0.5).forEach(recipe => {
+                    const card = document.createElement('div');
+                    card.className = 'recipe-card';
+                    card.textContent = recipe.value;
+                    card.dataset.value = recipe.value;
+                    card.dataset.id = recipe.id;
+                    card.style.setProperty('--color', recipe.color);
+                    card.draggable = true;
+                    recipeSource.appendChild(card);
+                });
+            }
 
-        // --- Navigation ---
-        startAdventureBtn.addEventListener("click", () =>
-          switchSection("modes")
-        );
-        quizModeBtn.addEventListener("click", () => {
-          lastQuizContext = "quiz";
-          startQuiz();
-        });
-        gamesModeBtn.addEventListener("click", () => switchSection("games"));
-        retryBtn.addEventListener("click", () => {
-          if (lastQuizContext === "quiz") startQuiz();
-        });
-
-        function startQuiz() {
-          switchSection("quiz");
-          lives = 3;
-          score = 0;
-          currentQuestionIndex = 0;
-          updateLives();
-          displayQuestion();
-        }
-
-        function displayQuestion() {
-          const question = quizData[currentQuestionIndex];
-          quizQuestionContainer.innerHTML = `<h3 class="text-3xl font-bold mb-6 text-center">${question.question}</h3>`;
-          const optionsContainer = document.createElement("div");
-          optionsContainer.className = "space-y-4";
-          question.options.forEach((opt) => {
-            const btn = document.createElement("button");
-            btn.className = "quiz-option";
-            btn.textContent = opt;
-            btn.addEventListener("click", () => selectOption(btn));
-            optionsContainer.appendChild(btn);
-          });
-          quizQuestionContainer.appendChild(optionsContainer);
-
-          updateProgress();
-          feedbackMessage.innerHTML = "";
-          submitAnswerBtn.classList.remove("hidden");
-          nextQuestionBtn.classList.add("hidden");
-          submitAnswerBtn.disabled = false;
-        }
-
-        function selectOption(button) {
-          document
-            .querySelectorAll(".quiz-option.selected")
-            .forEach((btn) => btn.classList.remove("selected"));
-          button.classList.add("selected");
-        }
-
-        submitAnswerBtn.addEventListener("click", () => {
-          const selectedBtn = document.querySelector(".quiz-option.selected");
-          if (!selectedBtn) return;
-
-          submitAnswerBtn.disabled = true;
-          const isCorrect =
-            selectedBtn.textContent === quizData[currentQuestionIndex].correct;
-
-          document.querySelectorAll(".quiz-option").forEach((btn) => {
-            btn.disabled = true;
-            if (btn.textContent === quizData[currentQuestionIndex].correct)
-              btn.classList.add("correct");
-            else if (btn.classList.contains("selected"))
-              btn.classList.add("incorrect");
-          });
-
-          if (isCorrect) {
-            score++;
-            feedbackMessage.innerHTML =
-              '<span class="text-green-500">رائع! إجابة صحيحة! 🎉</span>';
-          } else {
-            lives--;
-            updateLives();
-            feedbackMessage.innerHTML =
-              '<span class="text-red-500">أوه! حاول مرة أخرى! 😟</span>';
-          }
-
-          const isGameOver =
-            lives === 0 || currentQuestionIndex === quizData.length - 1;
-          setTimeout(() => {
-            if (isGameOver) showResults();
-            else nextQuestionBtn.classList.remove("hidden");
-          }, 1500);
-
-          submitAnswerBtn.classList.add("hidden");
-        });
-
-        nextQuestionBtn.addEventListener("click", () => {
-          currentQuestionIndex++;
-          displayQuestion();
-        });
-
-        function updateProgress() {
-          const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
-          progressFill.style.width = `${progress}%`;
-          questionCounter.textContent = `السؤال ${
-            currentQuestionIndex + 1
-          } من ${quizData.length}`;
-        }
-
-        function updateLives() {
-          livesContainer.innerHTML = Array.from(
-            { length: 3 },
-            (_, i) =>
-              `<span class="heart ${i >= lives ? "lost" : ""}">💖</span>`
-          ).join("");
-        }
-
-        function showResults() {
-          switchSection("results");
-          resultsHeader.textContent =
-            lives === 0 ? "حاول مرة أخرى! 😟" : "مبروك أيها البطل! 🎉";
-          scoreText.textContent = `لقد حصلت على ${score} إجابة صحيحة!`;
-          starsContainer.innerHTML = Array.from(
-            { length: score },
-            () =>
-              `<span class="star-icon"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>`
-          ).join("");
-          achievementsContainer.innerHTML =
-            score > quizData.length / 2
-              ? '<span class="achievement-badge">🌟 نجم الأخلاق 🌟</span>'
-              : "";
-        }
-
-        // --- Drawing Game ---
-        const ctx = drawingCanvas.getContext("2d");
-        let isDrawing = false,
-          lastX,
-          lastY;
-        let drawingColor = "#4A90E2";
-
-        function getPos(e) {
-          const rect = drawingCanvas.getBoundingClientRect();
-          const clientX = e.clientX || e.touches[0].clientX;
-          const clientY = e.clientY || e.touches[0].clientY;
-          return { x: clientX - rect.left, y: clientY - rect.top };
-        }
-
-        function startDrawing(e) {
-          e.preventDefault();
-          isDrawing = true;
-          const pos = getPos(e);
-          [lastX, lastY] = [pos.x, pos.y];
-        }
-
-        function draw(e) {
-          if (!isDrawing) return;
-          e.preventDefault();
-          const pos = getPos(e);
-          ctx.beginPath();
-          ctx.moveTo(lastX, lastY);
-          ctx.lineTo(pos.x, pos.y);
-          ctx.strokeStyle = drawingColor;
-          ctx.lineWidth = 5;
-          ctx.lineCap = "round";
-          ctx.stroke();
-          [lastX, lastY] = [pos.x, pos.y];
-        }
-
-        drawingCanvas.addEventListener("mousedown", startDrawing);
-        drawingCanvas.addEventListener("mousemove", draw);
-        drawingCanvas.addEventListener("mouseup", () => (isDrawing = false));
-        drawingCanvas.addEventListener("mouseout", () => (isDrawing = false));
-        drawingCanvas.addEventListener("touchstart", startDrawing);
-        drawingCanvas.addEventListener("touchmove", draw);
-        drawingCanvas.addEventListener("touchend", () => (isDrawing = false));
-
-        clearDrawingBtn.addEventListener("click", () =>
-          ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height)
-        );
-        drawingTools.forEach((tool) => {
-          if (tool.dataset.color)
-            tool.addEventListener("click", () => {
-              drawingColor = tool.dataset.color;
-              document
-                .querySelectorAll(".drawing-tool.active")
-                .forEach((t) => t.classList.remove("active"));
-              tool.classList.add("active");
+            // --- Event Delegation ---
+            const debouncedCheckInput = debounce(checkInput, 300);
+            
+            mainContainer.addEventListener('pointerdown', () => {
+                if (!audioStarted) {
+                    Tone.start();
+                    audioStarted = true;
+                }
             });
-        });
-
-        // --- Memory Game ---
-        let flippedCards = [],
-          canFlip = true;
-
-        startMemoryBtn.addEventListener("click", () => {
-          memoryGameContainer.innerHTML = "";
-          canFlip = true;
-          flippedCards = [];
-          let cardEmojis = [...memoryEmojis, ...memoryEmojis].sort(
-            () => 0.5 - Math.random()
-          );
-
-          cardEmojis.forEach((emoji) => {
-            const card = document.createElement("div");
-            card.className = "memory-card";
-            card.dataset.emoji = emoji;
-            card.innerHTML = `<div class="card-inner"><div class="card-face card-front"></div><div class="card-face card-back">${emoji}</div></div>`;
-            card.addEventListener("click", () => {
-              if (
-                !canFlip ||
-                card.classList.contains("flipped") ||
-                card.classList.contains("matched")
-              )
-                return;
-              card.classList.add("flipped");
-              flippedCards.push(card);
-              if (flippedCards.length === 2) {
-                canFlip = false;
-                setTimeout(() => {
-                  const [c1, c2] = flippedCards;
-                  if (c1.dataset.emoji === c2.dataset.emoji) {
-                    c1.classList.add("matched");
-                    c2.classList.add("matched");
-                  } else {
-                    c1.classList.remove("flipped");
-                    c2.classList.remove("flipped");
-                  }
-                  flippedCards = [];
-                  canFlip = true;
-                }, 1000);
-              }
+            
+            mainContainer.addEventListener('input', (e) => {
+                if (e.target.matches('[data-action="analyze-ingredient"], [data-action="mix-potion"]')) {
+                    debouncedCheckInput(e.target);
+                }
             });
-            memoryGameContainer.appendChild(card);
-          });
-        });
-      });
+
+            mainContainer.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('recipe-card')) {
+                    draggedRecipe = e.target;
+                    setTimeout(() => e.target.classList.add('is-dragging'), 0);
+                }
+            });
+            mainContainer.addEventListener('dragend', (e) => {
+                if(draggedRecipe) draggedRecipe.classList.remove('is-dragging');
+                draggedRecipe = null;
+            });
+            mainContainer.addEventListener('dragover', (e) => e.preventDefault());
+            mainContainer.addEventListener('dragleave', (e) => e.target.closest('.sorted-shelf')?.classList.remove('drag-over'));
+            mainContainer.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                e.target.closest('.sorted-shelf')?.classList.add('drag-over');
+            });
+            mainContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const dropZone = e.target.closest('.sorted-shelf');
+                if (dropZone && draggedRecipe) {
+                    dropZone.appendChild(draggedRecipe);
+                    dropZone.classList.remove('drag-over');
+                    popSound();
+                    checkRecipeSort();
+                }
+            });
+            mainContainer.addEventListener('click', (e) => {
+                if(e.target.matches('[data-action="restart-lab"]')) restartLab();
+            });
+
+            // --- Ingredient & Potion Logic ---
+            function checkInput(input) {
+                const correctAnswer = parseInt(input.dataset.answer, 10);
+                const userAnswer = parseInt(input.value, 10);
+                
+                if (isNaN(userAnswer)) return;
+
+                if (userAnswer === correctAnswer) {
+                    if (input.classList.contains('correct')) return;
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    input.disabled = true;
+                    successSound();
+
+                    if(input.dataset.action === 'analyze-ingredient') {
+                         gameState.ingredientsAnalyzed++;
+                         input.closest('.ingredient-card')?.classList.add('correct');
+                    } else if (input.dataset.action === 'mix-potion') {
+                        gameState.potionsMixed++;
+                        const beaker = document.getElementById(input.dataset.targetBeakerId);
+                        const colors = input.dataset.colors.split(',');
+                        beaker.style.background = `linear-gradient(to right, ${colors[0]}, ${colors[1]})`;
+                    }
+                    
+                    checkOverallProgress();
+                } else {
+                    input.classList.add('incorrect');
+                    errorSound();
+                }
+            }
+
+            // --- Recipe Sorting Logic ---
+            function checkRecipeSort() {
+                const sortedShelf = document.getElementById('sorted-recipes');
+                const cards = Array.from(sortedShelf.querySelectorAll('.recipe-card'));
+                if (cards.length !== gameState.totalRecipes) return;
+                
+                const values = cards.map(c => parseInt(c.dataset.value, 10));
+                const isCorrect = values.every((val, i) => i === 0 || val >= values[i-1]);
+
+                if (isCorrect) {
+                    if (!gameState.recipesSorted) {
+                        gameState.recipesSorted = true;
+                        successSound();
+                        checkOverallProgress();
+                    }
+                } else {
+                    alert("الترتيب غير صحيح، حاول مرة أخرى!");
+                }
+            }
+            
+            // --- Game Completion and Restart Logic ---
+            function checkOverallProgress() {
+                if (gameState.ingredientsAnalyzed === gameState.totalIngredients &&
+                    gameState.potionsMixed === gameState.totalPotions &&
+                    gameState.recipesSorted) {
+                    
+                    setTimeout(() => {
+                        document.getElementById('final-result').style.display = 'block';
+                        successSound();
+                    }, 500);
+                }
+            }
+            
+            function restartLab() {
+                 gameState.ingredientsAnalyzed = 0;
+                 gameState.potionsMixed = 0;
+                 gameState.recipesSorted = false;
+
+                 document.querySelectorAll('.analysis-input, .mixing-answer').forEach(input => {
+                     input.value = '';
+                     input.disabled = false;
+                     input.classList.remove('correct', 'incorrect');
+                 });
+                 document.querySelectorAll('.ingredient-card').forEach(c => c.classList.remove('correct'));
+                 document.querySelector('#result-beaker-1').style.background = '';
+                 
+                 populateRecipeShelf();
+                 document.querySelector('#sorted-recipes').innerHTML = '<div class="shelf-title">رتب الوصفات هنا (من الأصغر للأكبر)</div>';
+                 document.getElementById('final-result').style.display = 'none';
+            }
+            
+            // --- Start the Lab ---
+            initializeLab();
+        })();
     </script>
-  </body>
+</body>
 </html>
